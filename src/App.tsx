@@ -6,6 +6,7 @@ import { ADSRSection } from "./components/ADSRSection";
 import { ChorusSection } from "./components/ChorusControls";
 import { useKeyboard } from "./hooks/useKeyboard";
 import { ArpSection } from "./components/ArpSection";
+import { HoldButton } from "./components/HoldButton";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -60,7 +61,11 @@ function App() {
               alignItems: "flex-start",
             }}
           >
-            <ArpSection />
+            {/* Vänster sektion */}
+            <div style={{ display: "flex", gap: "10px" }}>
+              <HoldButton />
+              <ArpSection />
+            </div>
             <DCOSection />
             <div
               style={{

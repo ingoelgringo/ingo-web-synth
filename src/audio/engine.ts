@@ -8,6 +8,8 @@ class JunoEngine {
   private arpPattern: Tone.Pattern<string>;
   private activeNotes: Set<string> = new Set();
   private arpEnabled: boolean = false;
+  private holdEnabled: boolean = false;
+  private heldKeys: Set<string> = new Set();
 
   constructor() {
     // Chorus - Juno-stilen har en väldigt specifik bredd
@@ -52,6 +54,21 @@ class JunoEngine {
 
     // Signalväg: Osc -> HPF -> VCF -> Chorus -> Master
     this.synth.chain(this.hpf, this.vcf, this.chorus, Tone.Destination);
+  }
+
+  // Ny metod för att slå på/av global HOLD
+  public setHold(enabled: boolean) {
+    this.holdEnabled = enabled;
+
+    // Om vi stänger av HOLD, måste vi döda alla noter som inte fysiskt hålls nere just nu.
+    // För enkelhetens skull dödar vi allt ljud snabbt för att undvika hängande toner.
+    if (!enabled) {
+      this.synth.releaseAll();
+      this.activeNotes.clear();
+      if (this.arpEnabled) {
+        this.arpPattern.stop();
+      }
+    }
   }
 
   public setWaveform(saw: boolean, pulse: boolean) {
@@ -121,39 +138,53 @@ class JunoEngine {
   }
 
   public playNote(note: string, velocity: number = 0.7) {
+    this.heldKeys.add(note);
+
     if (this.arpEnabled) {
       if (!this.activeNotes.has(note)) {
         this.activeNotes.add(note);
         this.updateArpPattern();
 
-        // Om detta är den första noten och arpeggiatorn inte körs
-        if (this.activeNotes.size > 0 && this.arpPattern.state !== "started") {
-          // Stoppa och starta om transporten för att nollställa rutnätet helt
+        // SCENARIO 1: Arpeggiatorn är inte igång alls.
+        // Då kör vi din "Response Fix": Stoppa och starta om allt för omedelbar start.
+        if (this.arpPattern.state !== "started") {
           Tone.getTransport().stop();
           Tone.getTransport().start();
-
-          // Starta mönstret omedelbart (0) relativt till transportens start
           this.arpPattern.start(0);
         }
+        // SCENARIO 2: Arpeggiatorn kör redan (t.ex. HOLD är på).
+        // Då gör vi ingenting med Transporten, vi bara lägger till noten i loopen (sker via updateArpPattern).
       }
     } else {
+      // Vanligt spelläge
       this.synth.triggerAttack(note, Tone.now(), velocity);
+      this.activeNotes.add(note); // Lägg till i activeNotes även för poly-läge för HOLD-logiken
     }
   }
 
   public stopNote(note: string) {
+    this.heldKeys.delete(note);
+
+    // 1. Om HOLD är PÅ: Gör ingenting. Ljudet fortsätter.
+    if (this.holdEnabled) {
+      return;
+    }
+
+    // 2. Om HOLD är AV:
     if (this.arpEnabled) {
       this.activeNotes.delete(note);
       this.updateArpPattern();
 
+      // Om tomt -> Stäng av allt
       if (this.activeNotes.size === 0) {
         this.arpPattern.stop();
         this.synth.releaseAll();
-        // Stoppa transporten när vi inte spelar, så den är redo för nästa "Attack"
+        // Stäng av transporten så nästa anslag blir "fräscht"
         Tone.getTransport().stop();
       }
     } else {
       this.synth.triggerRelease(note, Tone.now());
+      this.activeNotes.delete(note);
     }
   }
 
