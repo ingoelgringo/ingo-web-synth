@@ -119,21 +119,26 @@ body {
 
 /* Den nya robusta slider-stilen */
 .vertical-slider {
-  -webkit-appearance: none; /* Ta bort standardutseende */
-  width: 120px; /* Längden på slidern (som blir höjden när vi roterar) */
-  height: 8px; /* Tjockleken på spåret */
-  background: var(--knob-track);
-  outline: none;
-  border-radius: 4px;
+  -webkit-appearance: none;
+  appearance: none; /* Add this standard property */
+  background: transparent; /* Use transparent background */
   cursor: pointer;
+  width: 140px; /* The length of the slider */
+  height: 8px; /* The track thickness */
 
-  /* Rotera slidern -90 grader för att göra den vertikal */
+  /* Transform: rotate horizontal slider to vertical */
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
 
-  /* Positionera den i mitten av containern */
+  /* Centering logic */
   position: absolute;
-  top: 60px; /* Justera detta värde för att centrera den vertikalt */
+  top: 50%;
+  left: 50%;
+  margin-left: -70px; /* Half of width */
+  margin-top: -4px; /* Half of height */
+
+  background-color: var(--knob-track);
+  border-radius: 4px;
 }
 
 /* Styla slider-"tummen" (handtaget) */

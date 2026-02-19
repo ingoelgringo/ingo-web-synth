@@ -79,7 +79,9 @@ class JunoEngine {
         try {
           const subNote = Tone.Frequency(note).transpose(-12).toNote();
           this.subSynth.triggerAttackRelease(subNote, "16n", time);
-        } catch (e) {}
+        } catch {
+          // Ignore errors if note is out of range
+        }
       },
       [],
       "up",
@@ -131,7 +133,9 @@ class JunoEngine {
       try {
         const subNote = Tone.Frequency(note).transpose(-12).toNote();
         this.subSynth.triggerAttack(subNote, Tone.now(), velocity);
-      } catch (e) {}
+      } catch {
+        // Ignore errors if note is out of range
+      }
 
       this.activeNotes.add(note);
     }
@@ -163,7 +167,9 @@ class JunoEngine {
       try {
         const subNote = Tone.Frequency(note).transpose(-12).toNote();
         this.subSynth.triggerRelease(subNote, Tone.now());
-      } catch (e) {}
+      } catch {
+        // Ignore errors if note is out of range
+      }
 
       this.activeNotes.delete(note);
     }
