@@ -11,33 +11,16 @@ export const HoldButton: React.FC = () => {
   return (
     <div
       style={{
-        border: "1px solid #666",
-        padding: "10px",
-        borderRadius: "4px",
-        backgroundColor: "#333",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        paddingRight: "15px",
+        borderRight: "1px solid #444",
       }}
     >
-      <h3 style={{ margin: "0 0 10px 0", fontSize: "0.9rem", color: "#ccc" }}>
-        KEY
-      </h3>
       <button
         onClick={() => setActive(!active)}
-        style={{
-          width: "50px",
-          height: "50px",
-          backgroundColor: active ? "#ffcc00" : "#444", // Juno "Orange/Gul" färg
-          color: active ? "#000" : "#ccc",
-          border: "2px solid #222",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontWeight: "bold",
-          fontSize: "0.9rem",
-          boxShadow: active ? "0 0 10px #ffcc00" : "none",
-        }}
+        className={`juno-btn ${active ? "active red" : ""}`}
+        style={{ height: "40px", fontSize: "0.7rem" }}
       >
         HOLD
       </button>

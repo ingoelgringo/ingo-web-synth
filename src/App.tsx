@@ -1,106 +1,108 @@
 import { useState } from "react";
+import "./JunoStyles.css"; // Importera den nya stilen
+import * as Tone from "tone";
 import { engine } from "./audio/engine";
-import { VCFSection } from "./components/VCFSection";
-import { DCOSection } from "./components/DCOSection";
-import { ADSRSection } from "./components/ADSRSection";
-import { ChorusSection } from "./components/ChorusControls";
-import { useKeyboard } from "./hooks/useKeyboard";
-import { ArpSection } from "./components/ArpSection";
+
+// Import Components
 import { HoldButton } from "./components/HoldButton";
+import { ArpSection } from "./components/ArpSection";
 import { LFOSection } from "./components/LFOSection";
+import { DCOSection } from "./components/DCOSection";
+import { VCFSection } from "./components/VCFSection";
+import { ADSRSection } from "./components/ADSRSection";
+import { ChorusSection } from "./components/ChorusSection";
+import { useKeyboard } from "./hooks/useKeyboard";
 
 function App() {
   const [started, setStarted] = useState(false);
-
   useKeyboard(started);
 
   const handleStart = async () => {
     await engine.start();
+    Tone.getTransport().start();
     setStarted(true);
   };
 
-  const playTestNote = () => {
-    if (!started) return;
-    engine.playNote("C3");
-  };
-
-  const stopTestNote = () => {
-    if (!started) return;
-    engine.stopNote("C3");
-  };
-
   return (
-    <div
-      style={{
-        padding: "20px",
-        fontFamily: "sans-serif",
-        backgroundColor: "#222",
-        color: "#fff",
-        minHeight: "100vh",
-      }}
-    >
-      <h1>JUNO-60 Web Synth</h1>
-
+    <div className="App">
       {!started ? (
-        <button
-          onClick={handleStart}
-          style={{
-            padding: "10px 20px",
-            fontSize: "1.2rem",
-            cursor: "pointer",
-          }}
-        >
-          START ENGINE
-        </button>
-      ) : (
-        <div style={{ display: "flex", gap: "20px", flexDirection: "column" }}>
-          <div
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ color: "#ccc", letterSpacing: "2px" }}>
+            ROLAND JUNO-60
+          </h1>
+          <button
+            onClick={handleStart}
             style={{
-              display: "flex",
-              gap: "20px",
-              flexWrap: "wrap",
-              alignItems: "flex-start",
+              padding: "15px 30px",
+              fontSize: "1.2rem",
+              background: "#d94e4e",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "4px",
             }}
           >
-            {/* Vänster sektion */}
-            <div style={{ display: "flex", gap: "10px" }}>
-              <HoldButton />
-              <ArpSection />
-              <LFOSection />
-            </div>
-            <DCOSection />
-            <div
+            POWER ON
+          </button>
+        </div>
+      ) : (
+        <div className="main-container">
+          <div
+            className="juno-logo-bar"
+            style={{
+              marginBottom: "20px",
+              color: "#ccc",
+              fontStyle: "italic",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+            }}
+          >
+            Juno-60{" "}
+            <span
               style={{
-                border: "1px solid #444",
-                padding: "15px",
-                borderRadius: "8px",
+                fontSize: "0.8rem",
+                fontWeight: "normal",
+                color: "#888",
               }}
             >
-              <VCFSection />
-            </div>
-            <ADSRSection />
-            <ChorusSection /> {/* Lägg till Chorus här */}
+              PROGRAMMABLE POLYPHONIC SYNTHESIZER
+            </span>
           </div>
 
-          <div style={{ marginTop: "20px" }}>
-            <button
-              onMouseDown={playTestNote}
-              onMouseUp={stopTestNote}
-              onMouseLeave={stopTestNote}
-              style={{
-                padding: "20px 40px",
-                backgroundColor: "#ff4444",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-              }}
-            >
-              PLAY C3
-            </button>
-            <p>
-              Klicka och håll för att höra ljudet samtidigt som du drar i
-              VCF-reglaget.
-            </p>
+          <div className="juno-panel">
+            {/* LFO / CONTROLS SECTION */}
+            <div className="juno-section">
+              <div className="juno-header">CONTROLS</div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <HoldButton />
+                <ArpSection />
+                <LFOSection />
+              </div>
+            </div>
+
+            {/* DCO SECTION */}
+            <div className="juno-section">
+              <div className="juno-header">DCO</div>
+              <DCOSection />
+            </div>
+
+            {/* VCF SECTION */}
+            <div className="juno-section">
+              <div className="juno-header">VCF</div>
+              <VCFSection />
+            </div>
+
+            {/* VCA/ENV SECTION */}
+            <div className="juno-section">
+              <div className="juno-header">VCA / ENV</div>
+              <ADSRSection />
+            </div>
+
+            {/* CHORUS SECTION */}
+            <div className="juno-section">
+              <div className="juno-header">CHORUS</div>
+              <ChorusSection />
+            </div>
           </div>
         </div>
       )}
