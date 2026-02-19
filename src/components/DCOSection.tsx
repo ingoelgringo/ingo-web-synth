@@ -1,14 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { engine } from "../audio/engine";
+import "./ADSRSection.css"; // För sliders
 
 export const DCOSection: React.FC = () => {
   const [sawEnabled, setSawEnabled] = useState(true);
   const [pulseEnabled, setPulseEnabled] = useState(false);
+  const [subLevel, setSubLevel] = useState(0);
+  const [noiseLevel, setNoiseLevel] = useState(0);
 
-  // Uppdatera ljudmotorn när state ändras
   useEffect(() => {
     engine.setWaveform(sawEnabled, pulseEnabled);
   }, [sawEnabled, pulseEnabled]);
+
+  useEffect(() => {
+    engine.setSubLevel(subLevel);
+  }, [subLevel]);
+
+  useEffect(() => {
+    engine.setNoiseLevel(noiseLevel);
+  }, [noiseLevel]);
+
+  // Gemensam stil för knappar
+  const btnStyle = (active: boolean) => ({
+    padding: "10px",
+    backgroundColor: active ? "#ffcc00" : "#444",
+    color: active ? "#000" : "#fff",
+    border: "1px solid #222",
+    borderRadius: "2px",
+    cursor: "pointer",
+    fontWeight: "bold" as const,
+    fontSize: "0.8rem",
+    marginBottom: "10px",
+  });
 
   return (
     <div
@@ -17,42 +40,63 @@ export const DCOSection: React.FC = () => {
         padding: "10px",
         borderRadius: "4px",
         backgroundColor: "#333",
+        display: "flex",
+        flexDirection: "column", // Vertikal layout först
+        gap: "10px",
       }}
     >
-      <h3 style={{ margin: "0 0 10px 0", fontSize: "0.9rem", color: "#ccc" }}>
+      <h3 style={{ margin: "0 0 5px 0", fontSize: "0.9rem", color: "#ccc" }}>
         DCO
       </h3>
 
-      <div style={{ display: "flex", gap: "10px" }}>
-        {/* SAW Button */}
-        <button
-          onClick={() => setSawEnabled(!sawEnabled)}
-          style={{
-            padding: "10px",
-            backgroundColor: sawEnabled ? "#ffcc00" : "#444",
-            color: sawEnabled ? "#000" : "#fff",
-            border: "none",
-            borderRadius: "2px",
-            cursor: "pointer",
-          }}
-        >
-          SAW
-        </button>
+      <div style={{ display: "flex", gap: "15px" }}>
+        {/* WAVEFORMS */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <button
+            onClick={() => setSawEnabled(!sawEnabled)}
+            style={btnStyle(sawEnabled)}
+          >
+            SAW
+          </button>
+          <button
+            onClick={() => setPulseEnabled(!pulseEnabled)}
+            style={btnStyle(pulseEnabled)}
+          >
+            PULSE
+          </button>
+        </div>
 
-        {/* PULSE Button */}
-        <button
-          onClick={() => setPulseEnabled(!pulseEnabled)}
-          style={{
-            padding: "10px",
-            backgroundColor: pulseEnabled ? "#ffcc00" : "#444",
-            color: pulseEnabled ? "#000" : "#fff",
-            border: "none",
-            borderRadius: "2px",
-            cursor: "pointer",
-          }}
-        >
-          PULSE
-        </button>
+        {/* SUB SLIDER */}
+        <div className="slider-container" style={{ height: "120px" }}>
+          <input
+            type="range"
+            className="vertical-slider"
+            min="0"
+            max="1"
+            step="0.01"
+            value={subLevel}
+            onChange={(e) => setSubLevel(parseFloat(e.target.value))}
+          />
+          <label className="slider-label" style={{ marginTop: "-40px" }}>
+            SUB
+          </label>
+        </div>
+
+        {/* NOISE SLIDER */}
+        <div className="slider-container" style={{ height: "120px" }}>
+          <input
+            type="range"
+            className="vertical-slider"
+            min="0"
+            max="1"
+            step="0.01"
+            value={noiseLevel}
+            onChange={(e) => setNoiseLevel(parseFloat(e.target.value))}
+          />
+          <label className="slider-label" style={{ marginTop: "-40px" }}>
+            NOISE
+          </label>
+        </div>
       </div>
     </div>
   );
