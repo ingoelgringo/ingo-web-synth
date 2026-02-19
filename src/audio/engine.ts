@@ -5,6 +5,7 @@ class JunoEngine {
   private vcf: Tone.Filter; // Low pass
   private hpf: Tone.Filter; // High pass
   private synth: Tone.PolySynth;
+  private vibrato: Tone.Vibrato;
 
   // --- NYTT: Sub & Noise variabler ---
   private subSynth: Tone.PolySynth;
@@ -24,6 +25,13 @@ class JunoEngine {
     this.chorus = new Tone.Chorus(4, 2.5, 0.5).start();
     this.chorus.wet.value = 0;
 
+    // NYTT: Initiera Vibrato
+    this.vibrato = new Tone.Vibrato({
+      frequency: 5, // LFO Speed (Hz)
+      depth: 0, // LFO Amount (0 = inget vibrato)
+      type: "sine",
+    });
+
     this.vcf = new Tone.Filter({
       type: "lowpass",
       rolloff: -24,
@@ -35,43 +43,31 @@ class JunoEngine {
       frequency: 20,
     });
 
-    // 2. Skapa Huvudsynth (DCO)
+    // 2. Skapa Synthar
     this.synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: "sawtooth" },
-      envelope: {
-        attack: 0.01,
-        decay: 0.1,
-        sustain: 0.5,
-        release: 1,
-      },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 },
     });
 
-    // 3. Skapa SUB-SYNTH (Spelar en oktav lägre)
     this.subSynth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: "square" }, // Sub är oftast square på Juno
-      envelope: {
-        attack: 0.01,
-        decay: 0.1,
-        sustain: 0.5,
-        release: 1,
-      },
+      oscillator: { type: "square" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 },
     });
-    // Sub-volymkontroll (börjar på 0)
     this.subGain = new Tone.Gain(0);
     this.subSynth.connect(this.subGain);
 
-    // 4. Skapa NOISE
     this.noise = new Tone.Noise("white").start();
-    // Noise-volymkontroll (börjar på 0)
     this.noiseGain = new Tone.Gain(0);
     this.noise.connect(this.noiseGain);
 
-    // 5. KOPPLA IHOP ALLT (Routing)
-    // Alla ljudkällor -> HPF -> VCF -> Chorus -> Ut
-    this.synth.connect(this.hpf); // Huvudljud
-    this.subGain.connect(this.hpf); // Sub
-    this.noiseGain.connect(this.hpf); // Noise
+    // 3. KOPPLA IHOP ALLT (Uppdaterad kedja med Vibrato)
+    // Synth -> Vibrato -> HPF -> VCF -> Chorus -> Ut
 
+    this.synth.connect(this.vibrato);
+    this.subGain.connect(this.vibrato);
+    this.noiseGain.connect(this.vibrato);
+
+    this.vibrato.connect(this.hpf);
     this.hpf.connect(this.vcf);
     this.vcf.connect(this.chorus);
     this.chorus.toDestination();
@@ -79,29 +75,36 @@ class JunoEngine {
     // 6. Arpeggiator Setup
     this.arpPattern = new Tone.Pattern<string>(
       (time, note) => {
-        // Trigga både huvudnoten och sub-noten (en oktav ner)
         this.synth.triggerAttackRelease(note, "16n", time);
-
         try {
           const subNote = Tone.Frequency(note).transpose(-12).toNote();
           this.subSynth.triggerAttackRelease(subNote, "16n", time);
-        } catch (e) {
-          // Ignorera fel om frekvensen blir för låg
-        }
+        } catch (e) {}
       },
       [],
       "up",
     );
 
+    Tone.getContext().lookAhead = 0.05;
     Tone.getTransport().start();
-
-    // Minska latency för snabbare respons
-    Tone.context.lookAhead = 0.05;
   }
 
   public async start() {
     await Tone.start();
     console.log("Audio context started");
+  }
+
+  // --- METODER FÖR LFO ---
+
+  public setLFORate(rate: number) {
+    // Input 0-100 (typiskt slider-värde) mappas till 0.5Hz - 10Hz
+    const freq = 0.5 + (rate / 100) * 10;
+    this.vibrato.frequency.rampTo(freq, 0.1);
+  }
+
+  public setLFOAmount(amount: number) {
+    // Input 0-1 mappas till Vibrato depth (0-1 är rimligt för Tone.Vibrato)
+    this.vibrato.depth.rampTo(amount, 0.1);
   }
 
   // --- LOGIK FÖR PLAY/STOP ---

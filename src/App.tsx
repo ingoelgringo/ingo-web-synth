@@ -7,6 +7,7 @@ import { ChorusSection } from "./components/ChorusControls";
 import { useKeyboard } from "./hooks/useKeyboard";
 import { ArpSection } from "./components/ArpSection";
 import { HoldButton } from "./components/HoldButton";
+import { LFOSection } from "./components/LFOSection";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -65,6 +66,7 @@ function App() {
             <div style={{ display: "flex", gap: "10px" }}>
               <HoldButton />
               <ArpSection />
+              <LFOSection />
             </div>
             <DCOSection />
             <div

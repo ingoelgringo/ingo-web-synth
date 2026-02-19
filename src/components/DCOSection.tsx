@@ -8,6 +8,9 @@ export const DCOSection: React.FC = () => {
   const [subLevel, setSubLevel] = useState(0);
   const [noiseLevel, setNoiseLevel] = useState(0);
 
+  // NY STATE: LFO Amount (Vibrato depth)
+  const [lfoAmount, setLfoAmount] = useState(0);
+
   useEffect(() => {
     engine.setWaveform(sawEnabled, pulseEnabled);
   }, [sawEnabled, pulseEnabled]);
@@ -19,6 +22,11 @@ export const DCOSection: React.FC = () => {
   useEffect(() => {
     engine.setNoiseLevel(noiseLevel);
   }, [noiseLevel]);
+
+  // NY EFFECT: Skicka LFO-värdet till engine
+  useEffect(() => {
+    engine.setLFOAmount(lfoAmount);
+  }, [lfoAmount]);
 
   // Gemensam stil för knappar
   const btnStyle = (active: boolean) => ({
@@ -41,7 +49,7 @@ export const DCOSection: React.FC = () => {
         borderRadius: "4px",
         backgroundColor: "#333",
         display: "flex",
-        flexDirection: "column", // Vertikal layout först
+        flexDirection: "column",
         gap: "10px",
       }}
     >
@@ -50,6 +58,22 @@ export const DCOSection: React.FC = () => {
       </h3>
 
       <div style={{ display: "flex", gap: "15px" }}>
+        {/* NY SLIDER: LFO AMOUNT */}
+        <div className="slider-container" style={{ height: "120px" }}>
+          <input
+            type="range"
+            className="vertical-slider"
+            min="0"
+            max="1"
+            step="0.01"
+            value={lfoAmount}
+            onChange={(e) => setLfoAmount(parseFloat(e.target.value))}
+          />
+          <label className="slider-label" style={{ marginTop: "-40px" }}>
+            LFO
+          </label>
+        </div>
+
         {/* WAVEFORMS */}
         <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
           <button
