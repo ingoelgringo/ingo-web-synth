@@ -4,7 +4,6 @@ import * as Tone from "tone";
 import { engine } from "./audio/engine";
 
 // Import Components
-import { HoldButton } from "./components/HoldButton";
 import { ArpSection } from "./components/ArpSection";
 import { LFOSection } from "./components/LFOSection";
 import { DCOSection } from "./components/DCOSection";
@@ -12,6 +11,7 @@ import { VCFSection } from "./components/VCFSection";
 import { ADSRSection } from "./components/ADSRSection";
 import { ChorusSection } from "./components/ChorusSection";
 import { useKeyboard } from "./hooks/useKeyboard";
+import { KeyboardSection } from "./components/KeyboardSection";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -27,9 +27,7 @@ function App() {
     <div className="App">
       {!started ? (
         <div style={{ textAlign: "center" }}>
-          <h1 style={{ color: "#ccc", letterSpacing: "2px" }}>
-            ROLAND JUNO-60
-          </h1>
+          <h1 style={{ color: "#ccc", letterSpacing: "2px" }}>INGO-60</h1>
           <button
             onClick={handleStart}
             style={{
@@ -50,34 +48,39 @@ function App() {
           <div
             className="juno-logo-bar"
             style={{
-              marginBottom: "20px",
+              // marginBottom: "10px",
               color: "#ccc",
-              fontStyle: "italic",
-              fontSize: "1.5rem",
+              // fontStyle: "italic",
+              fontSize: "3.5rem",
               fontWeight: "bold",
+              textAlign: "right",
             }}
           >
-            Juno-60{" "}
             <span
               style={{
-                fontSize: "0.8rem",
+                fontSize: "1.5rem",
                 fontWeight: "normal",
                 color: "#888",
               }}
             >
               PROGRAMMABLE POLYPHONIC SYNTHESIZER
-            </span>
+            </span>{" "}
+            INGO-60
           </div>
 
           <div className="juno-panel">
             {/* LFO / CONTROLS SECTION */}
-            <div className="juno-section">
+            <div className="juno-section juno-section-arp">
               <div className="juno-header juno-header-L">CONTROLS</div>
               <div style={{ display: "flex", gap: "10px" }}>
-                <HoldButton />
                 <ArpSection />
-                <LFOSection />
               </div>
+            </div>
+
+            {/* LFO SECTION */}
+            <div className="juno-section">
+              <div className="juno-header juno-header-C">LFO</div>
+              <LFOSection />
             </div>
 
             {/* DCO SECTION */}
@@ -99,11 +102,12 @@ function App() {
             </div>
 
             {/* CHORUS SECTION */}
-            <div className="juno-section">
+            <div className="juno-section juno-section-chorus">
               <div className="juno-header juno-header-R">CHORUS</div>
               <ChorusSection />
             </div>
           </div>
+          <KeyboardSection />
         </div>
       )}
     </div>

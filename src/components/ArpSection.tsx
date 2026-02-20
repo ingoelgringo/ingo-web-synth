@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { engine } from "../audio/engine";
+import { HoldButton } from "./HoldButton";
 
 export const ArpSection: React.FC = () => {
   const [enabled, setEnabled] = useState(false);
@@ -23,7 +24,6 @@ export const ArpSection: React.FC = () => {
         gap: "15px",
         alignItems: "flex-end",
         height: "100%",
-        borderRight: "1px solid #444",
         paddingRight: "15px",
         marginRight: "5px",
       }}
@@ -36,6 +36,7 @@ export const ArpSection: React.FC = () => {
           paddingBottom: "30px",
         }}
       >
+        <HoldButton />
         <button
           onClick={() => setEnabled(!enabled)}
           className={`juno-btn red ${enabled ? "active" : ""}`}
@@ -63,6 +64,7 @@ export const ArpSection: React.FC = () => {
       </div>
 
       <div className="slider-container">
+        <div className="slider-label">RATE</div>
         <input
           type="range"
           className="vertical-slider"
@@ -72,7 +74,6 @@ export const ArpSection: React.FC = () => {
           value={rate}
           onChange={(e) => setRate(parseInt(e.target.value))}
         />
-        <div className="slider-label">RATE</div>
       </div>
     </div>
   );

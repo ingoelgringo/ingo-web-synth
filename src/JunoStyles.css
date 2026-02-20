@@ -1,5 +1,5 @@
 :root {
-  --juno-bg: #2b2b2b; /* Mörkgrå panel */
+  --jubgno-: #2b2b2b; /* Mörkgrå panel */
   --juno-panel-border: #999; /* Ljus list */
   --juno-text: #ddd;
   --juno-yellow: #eecf45; /* VCA / Chorus */
@@ -15,7 +15,7 @@
 body {
   background-color: #1a1a1a;
   color: var(--juno-text);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -55,19 +55,9 @@ body {
   border-right: none;
 }
 
-.juno-header1 {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
-  color: var(--juno-text);
-  text-transform: uppercase;
-  background-color: var(--juno-red);
-  /* border-bottom: 1px solid var(--juno-white); */
-  padding-bottom: 5px;
-  padding-top: 5px;
-  width: 100%;
-  text-align: center;
+.juno-section-arp,
+.juno-section-chorus {
+  border-bottom-color: var(--juno-blue);
 }
 
 .juno-header {
@@ -77,11 +67,12 @@ body {
   text-transform: uppercase;
   color: var(--juno-text);
 
-  background-color: var(--juno-red);
   text-align: center;
 }
 
 .juno-header-C {
+  background-color: var(--juno-red);
+
   padding: 5px 20px;
   margin: 0 -20px 20px -20px;
 
@@ -90,6 +81,8 @@ body {
 
 .juno-header-R,
 .juno-header-L {
+  background-color: var(--juno-blue);
+
   padding: 5px 20px;
   margin: 0 0 20px 0;
   width: 100%;

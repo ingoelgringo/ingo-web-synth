@@ -7,7 +7,6 @@ export const DCOSection: React.FC = () => {
   const [pulseEnabled, setPulseEnabled] = useState(false);
   const [subLevel, setSubLevel] = useState(0);
   const [noiseLevel, setNoiseLevel] = useState(0);
-  const [lfoAmount, setLfoAmount] = useState(0);
 
   useEffect(() => {
     engine.setWaveform(sawEnabled, pulseEnabled);
@@ -21,10 +20,6 @@ export const DCOSection: React.FC = () => {
     engine.setNoiseLevel(noiseLevel);
   }, [noiseLevel]);
 
-  useEffect(() => {
-    engine.setLFOAmount(lfoAmount);
-  }, [lfoAmount]);
-
   return (
     <div
       style={{
@@ -34,20 +29,6 @@ export const DCOSection: React.FC = () => {
         height: "100%",
       }}
     >
-      {/* LFO AMOUNT SLIDER */}
-      <div className="slider-container">
-        <input
-          type="range"
-          className="vertical-slider"
-          min="0"
-          max="1"
-          step="0.01"
-          value={lfoAmount}
-          onChange={(e) => setLfoAmount(parseFloat(e.target.value))}
-        />
-        <div className="slider-label">LFO</div>
-      </div>
-
       {/* WAVEFORM BUTTONS (Vertikalt stackade som på Juno) */}
       <div
         style={{
