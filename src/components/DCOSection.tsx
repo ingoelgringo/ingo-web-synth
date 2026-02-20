@@ -89,6 +89,7 @@ export const DCOSection: React.FC = () => {
 
       {/* NOISE SLIDER */}
       <div className="slider-container">
+        <div className="slider-label">NOISE</div>
         <input
           type="range"
           className="vertical-slider"
@@ -98,7 +99,6 @@ export const DCOSection: React.FC = () => {
           value={noiseLevel}
           onChange={(e) => setNoiseLevel(parseFloat(e.target.value))}
         />
-        <div className="slider-label">NOISE</div>
       </div>
     </div>
   );

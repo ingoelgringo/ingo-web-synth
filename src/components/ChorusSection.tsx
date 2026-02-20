@@ -12,8 +12,9 @@ export const ChorusSection: React.FC = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
-        gap: "15px",
+        height: "100%",
+        alignItems: "center",
+        gap: "2px",
         padding: "10px 0",
       }}
     >

@@ -66,8 +66,8 @@ export const ArpSection: React.FC = () => {
         <input
           type="range"
           className="vertical-slider"
-          min="60"
-          max="240"
+          min="80"
+          max="600"
           step="1"
           value={rate}
           onChange={(e) => setRate(parseInt(e.target.value))}
