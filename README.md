@@ -2,7 +2,7 @@
 
 ### A Juno-Inspired Synthesizer in the Browser
 
-<img src="./assets/synth-hero.png" alt="Web Synth UI" width="100%" />
+<img src="./assets/ingo-60-synth.png" alt="Web Synth UI" width="100%" />
 
 A web-based synthesizer built with **Vite**, **React**, **TypeScript**, and **Tone.js**, inspired by the warm, immediate sound and workflow of the classic **Roland JUNO-60**.
 
