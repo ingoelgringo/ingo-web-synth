@@ -1,4 +1,4 @@
-# 🎹 Web Synth
+# Web Synth
 
 ### A Juno-Inspired Synthesizer in the Browser
 
@@ -10,34 +10,34 @@ This project explores how traditional subtractive synthesis can be re-imagined u
 
 ---
 
-## ✨ Features
+## Features
 
-🎛️ **Subtractive synthesis**
+**Subtractive synthesis**
 
 - Oscillator section
 - Low-pass filter
 - ADSR envelopes
 
-🎚️ **JUNO-style workflow**
+**JUNO-style workflow**
 
 - Minimal, hands-on controls
 - Fast sound design
 
-🔊 **Tone.js audio engine**
+**Tone.js audio engine**
 
 - Sample-accurate timing
 - Clean Web Audio abstractions
 
-⌨️ **Playable**
+**Playable**
 
 - On-screen controls
 - Computer keyboard input
 
-🌐 **Runs entirely in the browser**
+**Runs entirely in the browser**
 
 ---
 
-## 🎨 Interface
+## Interface
 
 <img src="./assets/juno-60.png" alt="Synth UI" width="100%" />
 
@@ -51,7 +51,7 @@ Form follows function.
 
 ---
 
-## 🧠 Tech Stack
+## Tech Stack
 
 | Technology        | Purpose                 |
 | ----------------- | ----------------------- |
