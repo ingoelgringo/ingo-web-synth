@@ -14,7 +14,6 @@ export const HoldButton: React.FC = () => {
         display: "flex",
         alignItems: "center",
         paddingRight: "15px",
-        // borderRight: "1px solid #444",
       }}
     >
       <button

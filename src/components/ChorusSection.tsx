@@ -19,7 +19,7 @@ export const ChorusSection: React.FC = () => {
       }}
     >
       <button
-        onClick={() => setMode(mode === 0 ? 0 : 0)} // Bara för tydlighet
+        onClick={() => setMode(mode === 0 ? 0 : 0)}
         className={`juno-btn yellow ${mode === 0 ? "active" : ""}`}
         style={{ opacity: mode === 0 ? 1 : 0.5 }}
       >

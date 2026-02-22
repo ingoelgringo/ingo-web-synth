@@ -1,11 +1,10 @@
 import React from "react";
-import "../KeyboardStyles.css"; // Import the new style
+import "../KeyboardStyles.css";
 
 export const KeyboardSection: React.FC = () => {
   return (
     <div className="keyboard-section">
       <div className="keyboard-container">
-        {/* Keyboard keys would be rendered here */}
         <div className="keyboard-key">
           <div className="keyboard-key-black"></div>
         </div>
@@ -46,7 +45,7 @@ export const KeyboardSection: React.FC = () => {
         <div className="keyboard-key">
           <div className="keyboard-key-black"></div>
         </div>
-        <div className="keyboard-key">E</div>
+        <div className="keyboard-key"></div>
         <div className="keyboard-key">
           <div className="keyboard-key-black"></div>
         </div>

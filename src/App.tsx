@@ -1,9 +1,7 @@
 import { useState } from "react";
-import "./JunoStyles.css"; // Importera den nya stilen
+import "./JunoStyles.css";
 import * as Tone from "tone";
 import { engine } from "./audio/engine";
-
-// Import Components
 import { ArpSection } from "./components/ArpSection";
 import { LFOSection } from "./components/LFOSection";
 import { DCOSection } from "./components/DCOSection";
@@ -45,63 +43,42 @@ function App() {
         </div>
       ) : (
         <div className="main-container">
-          <div
-            className="juno-logo-bar"
-            style={{
-              // marginBottom: "10px",
-              color: "#ccc",
-              // fontStyle: "italic",
-              fontSize: "3.5rem",
-              fontWeight: "bold",
-              textAlign: "right",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "normal",
-                color: "#888",
-              }}
-            >
+          <div className="juno-logo-bar">
+            <span className="juno-subtitle">
               PROGRAMMABLE POLYPHONIC SYNTHESIZER
             </span>{" "}
             INGO-60
           </div>
 
           <div className="juno-panel">
-            {/* LFO / CONTROLS SECTION */}
+            //* LFO / CONTROLS SECTION
             <div className="juno-section juno-section-arp">
-              <div className="juno-header juno-header-L">CONTROLS</div>
+              <div className="juno-header juno-header-L">ARPEGGIO</div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <ArpSection />
               </div>
             </div>
-
-            {/* LFO SECTION */}
+            //* LFO SECTION
             <div className="juno-section">
               <div className="juno-header juno-header-C">LFO</div>
               <LFOSection />
             </div>
-
-            {/* DCO SECTION */}
+            //* DCO SECTION
             <div className="juno-section">
               <div className="juno-header juno-header-C">DCO</div>
               <DCOSection />
             </div>
-
-            {/* VCF SECTION */}
+            //* VCF SECTION
             <div className="juno-section">
               <div className="juno-header juno-header-C">VCF</div>
               <VCFSection />
             </div>
-
-            {/* VCA/ENV SECTION */}
+            //* VCA/ENV SECTION
             <div className="juno-section">
               <div className="juno-header juno-header-C">VCA / ENV</div>
               <ADSRSection />
             </div>
-
-            {/* CHORUS SECTION */}
+            //* CHORUS SECTION
             <div className="juno-section juno-section-chorus">
               <div className="juno-header juno-header-R">CHORUS</div>
               <ChorusSection />

@@ -9,7 +9,7 @@
   --knob-track: #111;
   --knob-handle: #373737;
 
-  --lines: 10; /* Antal linjer på slider-tracken */
+  --lines: 10; /* Number of lines on the slider track */
 }
 
 body {
@@ -21,6 +21,19 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+}
+
+.juno-logo-bar {
+  color: var(--juno-text);
+  font-size: 3.5rem;
+  font-weight: bold;
+  text-align: right;
+}
+
+.juno-subtitle {
+  color: #888;
+  font-size: 1.5rem;
+  font-weight: normal;
 }
 
 /* HUVUDPANELEN */
@@ -149,116 +162,6 @@ body {
   position: relative;
 }
 
-.vertical-slider3 {
-  writing-mode: vertical-lr;
-  direction: rtl;
-  appearance: none;
-  width: 8px;
-  height: 140px;
-  background: var(--knob-track);
-  &::-webkit-slider-thumb {
-    appearance: none;
-    background: linear-gradient(
-      to bottom,
-      var(--knob-handle) calc(50% - 1px),
-      var(--juno-white) calc(50% - 1px) calc(50% + 1px),
-      var(--knob-handle) calc(50% + 1px)
-    );
-    border-radius: 1px;
-    width: 24px;
-    scale: 1.4 1;
-    height: 14px;
-  }
-  &::-webkit-slider-runnable-track {
-    background: repeating-linear-gradient(
-      to bottom,
-      #fff 0 2px,
-      transparent 2px calc((100% - 2px) / (var(--lines) - 1))
-    );
-    border-radius: 4px;
-  }
-}
-
-.vertical-slider3 {
-  writing-mode: vertical-lr; /* Gör den vertikal */
-  direction: rtl; /* Gör att uppåt är "mer" (max) */
-  -webkit-appearance: none;
-  appearance: none;
-  width: 24px; /* Bredare för att rymma hela designen */
-  height: 140px;
-  background: transparent; /* Ingen färg på själva elementet */
-  cursor: pointer;
-  margin: 0;
-
-  &::-webkit-slider-runnable-track {
-    width: 24px;
-    height: 100%;
-    border-radius: 4px;
-
-    /* 
-       Här är magin med bakgrunden. Vi använder TVÅ lager:
-       1. Det mörka spåret i mitten (8px brett)
-       2. De vita skal-linjerna som ligger under/bakom
-    */
-    background: 
-      /* Lager 1: Mörkt spår i mitten (no-repeat, centrerat) */
-      linear-gradient(to right, var(--knob-track), var(--knob-track)) center /
-        8px 100% no-repeat,
-      /* Lager 2: Vita linjer (repeating) */
-      repeating-linear-gradient(
-          to bottom,
-          /* Riktning för firefox/standard (pga vertical-lr beter sig olika browsers ibland för gradienter, men detta brukar funka) */
-          #fff 0 1px,
-          /* Vit linje 1px */ transparent 1px
-            calc((100% - 2px) / (var(--lines) - 1))
-            /* Genomskinligt mellanrum */
-        );
-  }
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 18px; /* Bredd på knappen (pga roterat läge) */
-    width: 24px; /* Höjd på knappen */
-    scale: 1.4 1; /* Förstora knappen horisontellt */
-    background: linear-gradient(
-      to bottom,
-      var(--knob-handle) calc(50% - 1px),
-      var(--juno-white) calc(50% - 1px) calc(50% + 1px),
-      var(--knob-handle) calc(50% + 1px)
-    );
-    border: 1px solid #111;
-    border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    /* Justera positionen för att centrera tummen över spåret */
-    margin-top: 0px;
-    margin-right: -2px; /* Finjustering kan behövas beroende på webbläsare med vertical-lr */
-  }
-
-  /* Firefox-stöd (om du behöver det) */
-  &::-moz-range-track {
-    width: 24px;
-    height: 100%;
-    background:
-      linear-gradient(to right, var(--knob-track), var(--knob-track)) center /
-        8px 100% no-repeat,
-      repeating-linear-gradient(
-        to right,
-        /* Firefox tolkar riktning annorlunda i vertical mode ibland */ #fff 0
-          1px,
-        transparent 1px calc((100% - 2px) / (var(--lines) - 1))
-      );
-  }
-
-  &::-moz-range-thumb {
-    width: 24px;
-    height: 14px;
-    background: #ddd;
-    border: 1px solid #111;
-    border-radius: 2px;
-  }
-}
-
 .vertical-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -294,7 +197,7 @@ body {
 
 .vertical-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 18px;
+  height: 20px;
   width: 24px;
   scale: 1.4 1;
   background: linear-gradient(
@@ -324,7 +227,7 @@ body {
 }
 
 .vertical-slider::-moz-range-thumb {
-  height: 18px;
+  height: 20px;
   width: 24px;
   scale: 1.4 1;
   background: linear-gradient(

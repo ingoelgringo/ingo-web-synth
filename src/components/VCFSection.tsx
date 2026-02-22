@@ -18,7 +18,7 @@ export const VCFSection: React.FC = () => {
         height: "100%",
       }}
     >
-      {/* CUTOFF FREQ */}
+      //* CUTOFF FREQ
       <div className="slider-container">
         <input
           type="range"
@@ -31,8 +31,7 @@ export const VCFSection: React.FC = () => {
         />
         <div className="slider-label">FREQ</div>
       </div>
-
-      {/* RESONANCE */}
+      //* RESONANCE
       <div className="slider-container">
         <input
           type="range"

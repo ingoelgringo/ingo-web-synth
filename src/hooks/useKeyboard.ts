@@ -27,7 +27,7 @@ export const useKeyboard = (enabled: boolean) => {
     const pressedKeys = new Set<string>();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Förhindra att tangenter repeterar om man håller nere
+      // Prevent auto-repeating notes when holding down a key
       if (e.repeat) return;
 
       const note = KEY_MAP[e.key.toLowerCase()];
