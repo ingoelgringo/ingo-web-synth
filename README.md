@@ -39,7 +39,7 @@ This project explores how traditional subtractive synthesis can be re-imagined u
 
 ## 🎨 Interface
 
-<img src="./assets/synth-ui.png" alt="Synth UI" width="100%" />
+<img src="./assets/juno-60.png" alt="Synth UI" width="100%" />
 
 The interface is inspired by classic 80s hardware synths:
 
