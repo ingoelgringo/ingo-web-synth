@@ -83,6 +83,9 @@ function App() {
             </div>
           </div>
           <KeyboardSection />
+          <p style={{ fontFamily: "monospace", color: "#888" }}>
+            *keyboard not yet connected
+          </p>
         </div>
       )}
     </div>
