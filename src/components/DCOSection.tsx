@@ -29,7 +29,7 @@ export const DCOSection: React.FC = () => {
         height: "100%",
       }}
     >
-      //* WAVEFORM BUTTONS
+      {/* WAVEFORM BUTTONS */}
       <div
         style={{
           display: "flex",
@@ -53,7 +53,7 @@ export const DCOSection: React.FC = () => {
           PULSE
         </button>
       </div>
-      //* SUB SLIDER
+      {/* SUB SLIDER */}
       <div className="slider-container">
         <input
           type="range"
@@ -66,7 +66,7 @@ export const DCOSection: React.FC = () => {
         />
         <div className="slider-label">SUB</div>
       </div>
-      //* NOISE SLIDER
+      {/* NOISE SLIDER */}
       <div className="slider-container">
         <div className="slider-label">NOISE</div>
         <input

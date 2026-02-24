@@ -22,7 +22,7 @@ export const LFOSection: React.FC = () => {
         height: "100%",
       }}
     >
-      //* LFO RATE SLIDER
+      {/* LFO RATE SLIDER */}
       <div className="slider-container">
         <input
           type="range"
@@ -35,7 +35,7 @@ export const LFOSection: React.FC = () => {
         />
         <div className="slider-label">RATE</div>
       </div>
-      //* LFO AMOUNT SLIDER
+      {/* LFO AMOUNT SLIDER */}
       <div className="slider-container">
         <input
           type="range"

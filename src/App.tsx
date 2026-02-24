@@ -51,34 +51,34 @@ function App() {
           </div>
 
           <div className="juno-panel">
-            //* LFO / CONTROLS SECTION
+            {/* LFO / CONTROLS SECTION */}
             <div className="juno-section juno-section-arp">
               <div className="juno-header juno-header-L">ARPEGGIO</div>
               <div style={{ display: "flex", gap: "10px" }}>
                 <ArpSection />
               </div>
             </div>
-            //* LFO SECTION
+            {/* LFO SECTION */}
             <div className="juno-section">
               <div className="juno-header juno-header-C">LFO</div>
               <LFOSection />
             </div>
-            //* DCO SECTION
+            {/* DCO SECTION */}
             <div className="juno-section">
               <div className="juno-header juno-header-C">DCO</div>
               <DCOSection />
             </div>
-            //* VCF SECTION
+            {/* VCF SECTION */}
             <div className="juno-section">
               <div className="juno-header juno-header-C">VCF</div>
               <VCFSection />
             </div>
-            //* VCA/ENV SECTION
+            {/* VCA/ENV SECTION */}
             <div className="juno-section">
               <div className="juno-header juno-header-C">VCA / ENV</div>
               <ADSRSection />
             </div>
-            //* CHORUS SECTION
+            {/* CHORUS SECTION */}
             <div className="juno-section juno-section-chorus">
               <div className="juno-header juno-header-R">CHORUS</div>
               <ChorusSection />
