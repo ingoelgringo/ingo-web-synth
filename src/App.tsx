@@ -51,12 +51,10 @@ function App() {
           </div>
 
           <div className="juno-panel">
-            {/* LFO / CONTROLS SECTION */}
+            {/* ARP SECTION */}
             <div className="juno-section juno-section-arp">
               <div className="juno-header juno-header-L">ARPEGGIO</div>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <ArpSection />
-              </div>
+              <ArpSection />
             </div>
             {/* LFO SECTION */}
             <div className="juno-section">

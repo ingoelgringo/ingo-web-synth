@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { engine } from "../audio/engine";
 
-// Mappning av tangenter till noter (C-dur skala i mitten av tangentbordet)
+// Maping of computer keyboard keys to musical notes
 const KEY_MAP: Record<string, string> = {
   a: "C3",
   w: "C#3",
