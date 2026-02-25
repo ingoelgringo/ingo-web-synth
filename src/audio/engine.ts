@@ -248,11 +248,60 @@ class JunoEngine {
   }
 
   public setArpEnabled(enabled: boolean) {
+    // If state isn't changing, do nothing
+    if (this.arpEnabled === enabled) return;
+
     this.arpEnabled = enabled;
-    this.synth.releaseAll();
-    this.subSynth.releaseAll();
-    this.activeNotes.clear();
-    this.arpPattern.stop();
+
+    if (enabled) {
+      // Enabling Arp:
+      // 1. Temporarily force a short release to kill sustaining notes quickly
+      //    This prevents old polyphonic notes from fading out slowly while Arp starts
+      const currentOpts = this.synth.get();
+      // Safe fallback for release time if not found
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const oldRelease = (currentOpts.envelope as any)?.release ?? 1;
+
+      this.synth.set({ envelope: { release: 0.005 } });
+      this.subSynth.set({ envelope: { release: 0.005 } });
+
+      this.synth.releaseAll();
+      this.subSynth.releaseAll();
+
+      // 2. Restore the original release time after a short delay
+      setTimeout(() => {
+        this.synth.set({ envelope: { release: oldRelease } });
+        this.subSynth.set({ envelope: { release: oldRelease } });
+      }, 50);
+
+      // 3. Transfer current active notes to Arp Pattern
+      if (this.activeNotes.size > 0) {
+        this.updateArpPattern();
+        // 4. Start Arp if we have notes
+        Tone.getTransport().stop();
+        Tone.getTransport().start();
+        this.arpPattern.start(0);
+      }
+    } else {
+      // Disabling Arp:
+      // 1. Stop Arp
+      this.arpPattern.stop();
+      Tone.getTransport().stop();
+      this.synth.releaseAll();
+      this.subSynth.releaseAll();
+
+      // 2. Resume Polyphonic play for held notes
+      const notesToResume = Array.from(this.activeNotes);
+      // Clear them first so playNote re-triggers them
+      this.activeNotes.clear();
+
+      notesToResume.forEach((note) => {
+        // Only resume if physically held or hold is on
+        if (this.holdEnabled || this.heldKeys.has(note)) {
+          this.playNote(note);
+        }
+      });
+    }
   }
 
   public setArpRate(bpm: number) {
