@@ -13,8 +13,14 @@
 .keyboard-key {
   width: 40px;
   height: 180px;
-  margin: 0 2px;
-  background: #d9d8d4;
+  margin: 0 1px;
+  background: linear-gradient(
+    270deg,
+    #a4a4a4 0%,
+    #ffffff 5%,
+    #f2f2f2 95%,
+    #a4a4a4 100%
+  );
   border: 1px solid #7d7d7d;
   border-radius: 4px;
   position: relative;
@@ -23,7 +29,13 @@
 .keyboard-key-black {
   width: 30px;
   height: 100px;
-  background: #000;
+  background: linear-gradient(
+    270deg,
+    #767676 0%,
+    #1a1a1a 20%,
+    #1a1a1a 80%,
+    #464646 100%
+  );
   border-radius: 4px;
   position: absolute;
   top: 0;

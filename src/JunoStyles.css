@@ -38,7 +38,15 @@ body {
 
 /* MAINPANEL */
 .juno-panel {
-  background-color: var(--juno-bg);
+  background: linear-gradient(
+    135deg,
+    #1a1a1a 0%,
+    #1a1a1a 15%,
+    #2b2b2b 30%,
+    #2b2b2b 60%,
+    #1a1a1a 75%,
+    #1a1a1a 100%
+  );
   padding: 30px;
   border-radius: 4px;
   border-top: 4px solid #555;
