@@ -1,47 +1,76 @@
-import { useEffect } from "react";
-import { engine } from "../audio/engine";
+import { useEffect, useRef } from "react";
+import { useKeyboardContext } from "../contexts/KeyboardContext";
 
-// Maping of computer keyboard keys to musical notes
+// Map of computer keys to notes (covers approx C2 - C5 across two rows)
 const KEY_MAP: Record<string, string> = {
-  a: "C3",
-  w: "C#3",
-  s: "D3",
-  e: "D#3",
-  d: "E3",
-  f: "F3",
-  t: "F#3",
-  g: "G3",
-  y: "G#3",
-  h: "A3",
-  u: "A#3",
-  j: "B3",
-  k: "C4",
-  o: "C#4",
-  l: "D4",
+  // lower row
+  z: "C2",
+  s: "C#2",
+  x: "D2",
+  d: "D#2",
+  c: "E2",
+  v: "F2",
+  g: "F#2",
+  b: "G2",
+  h: "G#2",
+  n: "A2",
+  j: "A#2",
+  m: "B2",
+  ",": "C3",
+  l: "C#3",
+  ".": "D3",
+  ";": "D#3",
+  "/": "E3",
+  // top row
+  q: "C3",
+  "2": "C#3",
+  w: "D3",
+  "3": "D#3",
+  e: "E3",
+  r: "F3",
+  "5": "F#3",
+  t: "G3",
+  "6": "G#3",
+  y: "A3",
+  "7": "A#3",
+  u: "B3",
+  i: "C4",
+  "9": "C#4",
+  o: "D4",
+  "0": "D#4",
+  p: "E4",
+  "[": "F4",
+  "=": "F#4",
+  "]": "G4",
 };
 
 export const useKeyboard = (enabled: boolean) => {
+  const { pressNote, releaseNote } = useKeyboardContext();
+  const physicalMapRef = useRef(new Map<string, string>());
+
   useEffect(() => {
     if (!enabled) return;
 
-    const pressedKeys = new Set<string>();
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent auto-repeating notes when holding down a key
       if (e.repeat) return;
-
-      const note = KEY_MAP[e.key.toLowerCase()];
-      if (note && !pressedKeys.has(note)) {
-        engine.playNote(note);
-        pressedKeys.add(note);
+      const key = e.key.toLowerCase();
+      const note = KEY_MAP[key];
+      if (note) {
+        e.preventDefault();
+        if (!physicalMapRef.current.has(key)) {
+          physicalMapRef.current.set(key, note);
+          pressNote(note);
+        }
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      const note = KEY_MAP[e.key.toLowerCase()];
+      const key = e.key.toLowerCase();
+      const note = physicalMapRef.current.get(key) || KEY_MAP[key];
       if (note) {
-        engine.stopNote(note);
-        pressedKeys.delete(note);
+        e.preventDefault();
+        releaseNote(note);
+        physicalMapRef.current.delete(key);
       }
     };
 
@@ -51,6 +80,7 @@ export const useKeyboard = (enabled: boolean) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      physicalMapRef.current.clear();
     };
-  }, [enabled]);
+  }, [enabled, pressNote, releaseNote]);
 };

@@ -5,9 +5,13 @@
   margin-bottom: 50px;
 }
 
+/* container holds both white keys row and absolute black key overlay */
 .keyboard-container {
+  position: relative;
+  width: max-content;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
+  align-items: flex-start;
 }
 
 .keyboard-key {
@@ -25,6 +29,8 @@
   border-radius: 4px;
   position: relative;
   cursor: pointer;
+  box-sizing: border-box;
+  z-index: 2;
 }
 .keyboard-key-black {
   width: 30px;
@@ -37,9 +43,62 @@
     #464646 100%
   );
   border-radius: 4px;
+  top: 0;
+  z-index: 3;
+  cursor: pointer;
+  position: absolute;
+  pointer-events: auto;
+  box-sizing: border-box;
+  /* subtle outward shadow when not pressed */
+  /* subtle outward shadow when not pressed; shifted left (negative x-offset) */
+  box-shadow: -6px 8px 18px rgba(0, 0, 0, 0.45);
+  transition:
+    box-shadow 0.08s ease,
+    transform 0.06s ease;
+}
+
+.black-keys-overlay {
   position: absolute;
   top: 0;
-  left: 25px;
-  z-index: 1;
+  left: 0;
+  height: 100px;
+  z-index: 3;
+  pointer-events: none;
+}
+.black-keys-overlay > .keyboard-key-black {
+  pointer-events: auto;
+}
+
+/* Active/pressed visuals */
+.keyboard-key.active {
+  transform: translateY(3px);
+  /* inset shadow to show the key is pressed inward */
+  box-shadow:
+    inset 0 10px 20px rgba(0, 0, 0, 0.45),
+    inset 0 -6px 12px rgba(255, 255, 255, 0.04);
+}
+.keyboard-key-black.active {
+  transform: translateY(2px);
+  /* reduce outer shadow when pressed, add a subtle inset to imply depth */
+  /* reduce outer shadow when pressed (shifted left), add a subtle inset to imply depth */
+  box-shadow:
+    -4px 4px 10px rgba(0, 0, 0, 0.12),
+    inset -2px 6px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(270deg, #4a4a4a 0%, #111 60%);
+}
+
+.hold {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #333;
+  color: #eee;
   cursor: pointer;
 }
+.hold.active {
+  background: #2f7f2f;
+  color: white;
+  box-shadow: 0 6px 14px rgba(47, 127, 47, 0.25);
+}
+
+/* (kept above) */
