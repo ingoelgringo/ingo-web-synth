@@ -66,7 +66,7 @@ See package.json for available scripts.
 - Click the POWER ON button in the UI to initialize the audio context (required by browsers).
 - Use the keyboard mapping defined in src/hooks/useKeyboard.ts to play notes.
 
-<img src="./assets/key-mapping.jpeg" alt="Key Mapping" width="100%" />
+<img src="./assets/key-mapping.png" alt="Key Mapping" width="100%" />
 
 ---
 
