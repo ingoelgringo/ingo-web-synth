@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { engine } from "../audio/engine";
+import React from "react";
+import { useKeyboardContext } from "../contexts/KeyboardContext";
 
 export const HoldButton: React.FC = () => {
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    engine.setHold(active);
-  }, [active]);
+  const { hold, toggleHold } = useKeyboardContext();
 
   return (
     <div
@@ -17,8 +13,8 @@ export const HoldButton: React.FC = () => {
       }}
     >
       <button
-        onClick={() => setActive(!active)}
-        className={`juno-btn ${active ? "active red" : ""}`}
+        onClick={toggleHold}
+        className={`juno-btn ${hold ? "active red" : ""}`}
         style={{ height: "40px", fontSize: "0.7rem" }}
       >
         HOLD

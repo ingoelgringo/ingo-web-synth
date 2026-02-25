@@ -43,13 +43,7 @@ export const KeyboardSection: React.FC = () => {
 
   return (
     <div className="keyboard-section">
-      <div
-        style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}
-      >
-        <button className={hold ? "hold active" : "hold"} onClick={toggleHold}>
-          HOLD
-        </button>
-      </div>
+      {/* Hold button removed from keyboard UI; centralized in HoldButton component */}
 
       <div
         className="keyboard-container"
