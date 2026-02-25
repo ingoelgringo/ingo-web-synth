@@ -13,13 +13,18 @@ export function generateRange(startOct = 2, endOct = 5) {
     for (const w of WHITE_ORDER) {
       const whiteNote = `${w}${oct}`;
       const blackName = BLACK_AFTER[w];
+
       // do not create black key for octave end if black would be in next octave beyond C5
-      const blackNote = blackName ? `${blackName}${oct}` : undefined;
+      // Specifically, if we are at C5, we don't want C#5
+      const isLastNote = whiteNote === `C${endOct}`;
+      const blackNote =
+        blackName && !isLastNote ? `${blackName}${oct}` : undefined;
+
       whites.push({ note: whiteNote, black: blackNote });
+
+      // Stop generating after C5
+      if (isLastNote) break;
     }
   }
-  // Trim to C2..C5 inclusive: keep until C5 and stop
-  const endIndex = whites.findIndex((w) => w.note === "C5");
-  if (endIndex >= 0) return whites.slice(0, endIndex + 1);
   return whites;
 }
