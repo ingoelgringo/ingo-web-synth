@@ -1,5 +1,6 @@
 import * as Tone from "tone";
 import { ArpeggiatorController } from "./ArpeggiatorController";
+import { SequencerController } from "./SequencerController";
 
 const DEFAULT_ENVELOPE = { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 };
 const DEFAULT_LFO_SPEED = 5;
@@ -21,6 +22,7 @@ class JunoEngine {
 
   // Arpeggiator variables ---
   private arpController!: ArpeggiatorController;
+  private sequencerController!: SequencerController;
   private activeNotes: Set<string> = new Set();
   private heldKeys: Set<string> = new Set();
   private holdEnabled: boolean = false;
@@ -29,9 +31,9 @@ class JunoEngine {
     this.initNodes();
     this.setupRouting();
     this.initArpeggiator();
+    this.initSequencer();
 
     Tone.getContext().lookAhead = LOOKAHEAD_TIME;
-    Tone.getTransport().start();
   }
 
   private initNodes() {
@@ -89,8 +91,13 @@ class JunoEngine {
     this.arpController = new ArpeggiatorController(this.synth, this.subSynth);
   }
 
+  private initSequencer() {
+    this.sequencerController = new SequencerController(this.synth);
+  }
+
   public async start() {
     await Tone.start();
+    Tone.getTransport().start();
     console.log("Audio context started");
   }
 
@@ -257,6 +264,23 @@ class JunoEngine {
       this.activeNotes.clear();
       this.arpController.clearNotes();
     }
+  }
+
+  // --- SEQUENCER CONTROLS ---
+  public updateSequencerSteps(steps: string[][]) {
+    this.sequencerController.setSteps(steps);
+  }
+
+  public startSequencer() {
+    this.sequencerController.start();
+  }
+
+  public stopSequencer() {
+    this.sequencerController.stop();
+  }
+
+  public setSequencerCallback(cb: (step: number) => void) {
+    this.sequencerController.setOnStepCallback(cb);
   }
 }
 

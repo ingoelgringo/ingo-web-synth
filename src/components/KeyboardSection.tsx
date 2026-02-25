@@ -3,10 +3,12 @@ import "../styles/Keyboard.css";
 import { useKeyboardContext } from "../hooks/useKeyboardContext";
 import { generateRange } from "../utils/keyboardUtils";
 import { KEY_MAP } from "../hooks/useKeyboard";
+import { Sequencer } from "./Sequencer";
 
 export const KeyboardSection: React.FC = () => {
   const { activeNotes, pressNote, releaseNote } = useKeyboardContext();
   const [showKeyHints, setShowKeyHints] = useState(false);
+  const [showSequencer, setShowSequencer] = useState(false);
   const layout = generateRange(2, 5);
 
   // Create a reverse map to find the computer key for a given note
@@ -36,6 +38,19 @@ export const KeyboardSection: React.FC = () => {
           <div className="switch-hole">
             <input
               type="checkbox"
+              checked={showSequencer}
+              onChange={(e) => setShowSequencer(e.target.checked)}
+              className="switch-input"
+            />
+            <div className="switch-handle"></div>
+          </div>
+          <span className="switch-label">SEQ / KEYS</span>
+        </label>
+
+        <label className="key-hint-toggle">
+          <div className="switch-hole">
+            <input
+              type="checkbox"
               checked={showKeyHints}
               onChange={(e) => setShowKeyHints(e.target.checked)}
               className="switch-input"
@@ -45,62 +60,67 @@ export const KeyboardSection: React.FC = () => {
           <span className="switch-label">KEY HINTS</span>
         </label>
       </div>
-      <div
-        className="keyboard-container"
-        style={{ width: `${containerWidth}px` }}
-      >
-        <div className="white-keys" style={{ display: "flex" }}>
-          {layout.map((w) => {
-            const whiteActive = activeNotes.includes(w.note);
-            const keyHint = noteToKeyMap[w.note];
-            return (
-              <div
-                key={w.note}
-                className={`keyboard-key${whiteActive ? " active" : ""}`}
-                onPointerDown={() => pressNote(w.note)}
-                onPointerUp={() => releaseNote(w.note)}
-                onPointerLeave={() => releaseNote(w.note)}
-              >
-                {showKeyHints && keyHint && (
-                  <span className="key-hint white-key-hint">{keyHint}</span>
-                )}
-              </div>
-            );
-          })}
-        </div>
 
-        <div className="black-keys-overlay">
-          {layout.map((w, i) => {
-            if (!w.black) return null;
-            const blackActive = activeNotes.includes(w.black);
-            const left = i * keyStep + blackOffset;
-            const keyHint = noteToKeyMap[w.black];
-            return (
-              <div
-                key={w.black}
-                className={`keyboard-key-black${blackActive ? " active" : ""}`}
-                style={{ position: "absolute", left: `${left}px` }}
-                onPointerDown={(e) => {
-                  e.stopPropagation();
-                  pressNote(w.black!);
-                }}
-                onPointerUp={(e) => {
-                  e.stopPropagation();
-                  releaseNote(w.black!);
-                }}
-                onPointerLeave={(e) => {
-                  e.stopPropagation();
-                  releaseNote(w.black!);
-                }}
-              >
-                {showKeyHints && keyHint && (
-                  <span className="key-hint black-key-hint">{keyHint}</span>
-                )}
-              </div>
-            );
-          })}
+      {showSequencer ? (
+        <Sequencer />
+      ) : (
+        <div
+          className="keyboard-container"
+          style={{ width: `${containerWidth}px` }}
+        >
+          <div className="white-keys" style={{ display: "flex" }}>
+            {layout.map((w) => {
+              const whiteActive = activeNotes.includes(w.note);
+              const keyHint = noteToKeyMap[w.note];
+              return (
+                <div
+                  key={w.note}
+                  className={`keyboard-key${whiteActive ? " active" : ""}`}
+                  onPointerDown={() => pressNote(w.note)}
+                  onPointerUp={() => releaseNote(w.note)}
+                  onPointerLeave={() => releaseNote(w.note)}
+                >
+                  {showKeyHints && keyHint && (
+                    <span className="key-hint white-key-hint">{keyHint}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="black-keys-overlay">
+            {layout.map((w, i) => {
+              if (!w.black) return null;
+              const blackActive = activeNotes.includes(w.black);
+              const left = i * keyStep + blackOffset;
+              const keyHint = noteToKeyMap[w.black];
+              return (
+                <div
+                  key={w.black}
+                  className={`keyboard-key-black${blackActive ? " active" : ""}`}
+                  style={{ position: "absolute", left: `${left}px` }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    pressNote(w.black!);
+                  }}
+                  onPointerUp={(e) => {
+                    e.stopPropagation();
+                    releaseNote(w.black!);
+                  }}
+                  onPointerLeave={(e) => {
+                    e.stopPropagation();
+                    releaseNote(w.black!);
+                  }}
+                >
+                  {showKeyHints && keyHint && (
+                    <span className="key-hint black-key-hint">{keyHint}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

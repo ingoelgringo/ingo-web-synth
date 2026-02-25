@@ -36,6 +36,9 @@ export class ArpeggiatorController {
       this.updatePattern();
 
       if (this.arpPattern.state !== "started") {
+        if (Tone.getContext().state !== "running") {
+          Tone.getContext().resume();
+        }
         Tone.getTransport().stop();
         Tone.getTransport().start();
         this.arpPattern.start(0);
@@ -51,7 +54,6 @@ export class ArpeggiatorController {
       this.arpPattern.stop();
       this.synth.releaseAll();
       this.subSynth.releaseAll();
-      Tone.getTransport().stop();
     }
   }
 
@@ -102,6 +104,9 @@ export class ArpeggiatorController {
       if (this.activeNotes.size > 0) {
         this.updatePattern();
         // 4. Start Arp if we have notes
+        if (Tone.getContext().state !== "running") {
+          Tone.getContext().resume();
+        }
         Tone.getTransport().stop();
         Tone.getTransport().start();
         this.arpPattern.start(0);
@@ -110,7 +115,6 @@ export class ArpeggiatorController {
       // Disabling Arp:
       // 1. Stop Arp
       this.arpPattern.stop();
-      Tone.getTransport().stop();
       this.synth.releaseAll();
       this.subSynth.releaseAll();
 

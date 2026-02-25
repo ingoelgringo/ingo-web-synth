@@ -11,6 +11,8 @@
   bottom: 20px;
   left: 20px;
   z-index: 10;
+  display: flex;
+  gap: 20px;
 }
 
 .key-hint-toggle {
