@@ -1,32 +1,46 @@
 import * as Tone from "tone";
 
+const DEFAULT_ENVELOPE = { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 };
+const DEFAULT_LFO_SPEED = 5;
+const DEFAULT_HPF_FREQ = 20;
+const LOOKAHEAD_TIME = 0.05;
+
 class JunoEngine {
-  private chorus: Tone.Chorus;
-  private vcf: Tone.Filter;
-  private hpf: Tone.Filter;
-  private synth: Tone.PolySynth;
-  private vibrato: Tone.Vibrato;
+  private chorus!: Tone.Chorus;
+  private vcf!: Tone.Filter;
+  private hpf!: Tone.Filter;
+  private synth!: Tone.PolySynth;
+  private vibrato!: Tone.Vibrato;
 
   // Sub & Noise variables ---
-  private subSynth: Tone.PolySynth;
-  private subGain: Tone.Gain;
-  private noise: Tone.Noise;
-  private noiseGain: Tone.Gain;
+  private subSynth!: Tone.PolySynth;
+  private subGain!: Tone.Gain;
+  private noise!: Tone.Noise;
+  private noiseGain!: Tone.Gain;
 
   // Arpeggiator variables ---
-  private arpPattern: Tone.Pattern<string>;
+  private arpPattern!: Tone.Pattern<string>;
   private activeNotes: Set<string> = new Set();
   private heldKeys: Set<string> = new Set();
   private arpEnabled: boolean = false;
   private holdEnabled: boolean = false;
 
   constructor() {
+    this.initNodes();
+    this.setupRouting();
+    this.initArpeggiator();
+
+    Tone.getContext().lookAhead = LOOKAHEAD_TIME;
+    Tone.getTransport().start();
+  }
+
+  private initNodes() {
     this.chorus = new Tone.Chorus(4, 2.5, 0.5).start();
     this.chorus.wet.value = 0;
 
     this.vibrato = new Tone.Vibrato({
-      frequency: 5, // LFO Speed (Hz)
-      depth: 0, // LFO Amount
+      frequency: DEFAULT_LFO_SPEED,
+      depth: 0,
       type: "sine",
     });
 
@@ -38,23 +52,26 @@ class JunoEngine {
 
     this.hpf = new Tone.Filter({
       type: "highpass",
-      frequency: 20,
+      frequency: DEFAULT_HPF_FREQ,
     });
 
     this.synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: "sawtooth" },
-      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 },
+      envelope: DEFAULT_ENVELOPE,
     });
 
     this.subSynth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: "square" },
-      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 },
+      envelope: DEFAULT_ENVELOPE,
     });
     this.subGain = new Tone.Gain(0);
-    this.subSynth.connect(this.subGain);
 
     this.noise = new Tone.Noise("white").start();
     this.noiseGain = new Tone.Gain(0);
+  }
+
+  private setupRouting() {
+    this.subSynth.connect(this.subGain);
     this.noise.connect(this.noiseGain);
 
     // Synth -> Vibrato -> HPF -> VCF -> Chorus -> Ut
@@ -66,23 +83,22 @@ class JunoEngine {
     this.hpf.connect(this.vcf);
     this.vcf.connect(this.chorus);
     this.chorus.toDestination();
+  }
 
+  private initArpeggiator() {
     this.arpPattern = new Tone.Pattern<string>(
       (time, note) => {
         this.synth.triggerAttackRelease(note, "16n", time);
         try {
           const subNote = Tone.Frequency(note).transpose(-12).toNote();
           this.subSynth.triggerAttackRelease(subNote, "16n", time);
-        } catch {
-          // Ignore errors if note is out of range
+        } catch (error) {
+          console.warn(`Failed to play sub note for ${note}:`, error);
         }
       },
       [],
       "up",
     );
-
-    Tone.getContext().lookAhead = 0.05;
-    Tone.getTransport().start();
   }
 
   public async start() {
@@ -129,8 +145,8 @@ class JunoEngine {
         try {
           const subNote = Tone.Frequency(note).transpose(-12).toNote();
           this.subSynth.triggerAttack(subNote, Tone.now(), velocity);
-        } catch {
-          // Ignore errors if note is out of range
+        } catch (error) {
+          console.warn(`Failed to play sub note for ${note}:`, error);
         }
 
         this.activeNotes.add(note);
@@ -174,8 +190,8 @@ class JunoEngine {
     try {
       const subNote = Tone.Frequency(note).transpose(-12).toNote();
       this.subSynth.triggerRelease(subNote, Tone.now());
-    } catch {
-      // Ignore errors if note is out of range
+    } catch (error) {
+      console.warn(`Failed to release sub note for ${note}:`, error);
     }
 
     this.activeNotes.delete(note);
