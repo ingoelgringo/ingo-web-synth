@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+import { ArpeggiatorController } from "./ArpeggiatorController";
 
 const DEFAULT_ENVELOPE = { attack: 0.01, decay: 0.1, sustain: 0.5, release: 1 };
 const DEFAULT_LFO_SPEED = 5;
@@ -19,10 +20,9 @@ class JunoEngine {
   private noiseGain!: Tone.Gain;
 
   // Arpeggiator variables ---
-  private arpPattern!: Tone.Pattern<string>;
+  private arpController!: ArpeggiatorController;
   private activeNotes: Set<string> = new Set();
   private heldKeys: Set<string> = new Set();
-  private arpEnabled: boolean = false;
   private holdEnabled: boolean = false;
 
   constructor() {
@@ -86,19 +86,7 @@ class JunoEngine {
   }
 
   private initArpeggiator() {
-    this.arpPattern = new Tone.Pattern<string>(
-      (time, note) => {
-        this.synth.triggerAttackRelease(note, "16n", time);
-        try {
-          const subNote = Tone.Frequency(note).transpose(-12).toNote();
-          this.subSynth.triggerAttackRelease(subNote, "16n", time);
-        } catch (error) {
-          console.warn(`Failed to play sub note for ${note}:`, error);
-        }
-      },
-      [],
-      "up",
-    );
+    this.arpController = new ArpeggiatorController(this.synth, this.subSynth);
   }
 
   public async start() {
@@ -123,17 +111,8 @@ class JunoEngine {
   public playNote(note: string, velocity: number = 0.7) {
     this.heldKeys.add(note);
 
-    if (this.arpEnabled) {
-      if (!this.activeNotes.has(note)) {
-        this.activeNotes.add(note);
-        this.updateArpPattern();
-
-        if (this.arpPattern.state !== "started") {
-          Tone.getTransport().stop();
-          Tone.getTransport().start();
-          this.arpPattern.start(0);
-        }
-      }
+    if (this.arpController.enabled) {
+      this.arpController.addNote(note);
     } else {
       // Regular polyphonic mode
       // Avoid retriggering the same note if it's already active (prevents
@@ -170,16 +149,8 @@ class JunoEngine {
     }
 
     // Arpeggiator mode
-    if (this.arpEnabled) {
-      this.activeNotes.delete(note);
-      this.updateArpPattern();
-
-      if (this.activeNotes.size === 0) {
-        this.arpPattern.stop();
-        this.synth.releaseAll();
-        this.subSynth.releaseAll();
-        Tone.getTransport().stop();
-      }
+    if (this.arpController.enabled) {
+      this.arpController.removeNote(note);
       return;
     }
 
@@ -256,76 +227,25 @@ class JunoEngine {
   }
 
   // ARP Controls
-  private updateArpPattern() {
-    const sortedNotes = Array.from(this.activeNotes).sort((a, b) => {
-      return Tone.Frequency(a).toFrequency() - Tone.Frequency(b).toFrequency();
-    });
-    this.arpPattern.values = sortedNotes;
-  }
-
   public setArpEnabled(enabled: boolean) {
-    // If state isn't changing, do nothing
-    if (this.arpEnabled === enabled) return;
-
-    this.arpEnabled = enabled;
-
+    this.arpController.setEnabled(
+      enabled,
+      this.activeNotes,
+      this.heldKeys,
+      this.holdEnabled,
+      (note) => this.playNote(note),
+    );
     if (enabled) {
-      // Enabling Arp:
-      // 1. Temporarily force a short release to kill sustaining notes quickly
-      //    This prevents old polyphonic notes from fading out slowly while Arp starts
-      const currentOpts = this.synth.get();
-      // Safe fallback for release time if not found
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const oldRelease = (currentOpts.envelope as any)?.release ?? 1;
-
-      this.synth.set({ envelope: { release: 0.005 } });
-      this.subSynth.set({ envelope: { release: 0.005 } });
-
-      this.synth.releaseAll();
-      this.subSynth.releaseAll();
-
-      // 2. Restore the original release time after a short delay
-      setTimeout(() => {
-        this.synth.set({ envelope: { release: oldRelease } });
-        this.subSynth.set({ envelope: { release: oldRelease } });
-      }, 50);
-
-      // 3. Transfer current active notes to Arp Pattern
-      if (this.activeNotes.size > 0) {
-        this.updateArpPattern();
-        // 4. Start Arp if we have notes
-        Tone.getTransport().stop();
-        Tone.getTransport().start();
-        this.arpPattern.start(0);
-      }
-    } else {
-      // Disabling Arp:
-      // 1. Stop Arp
-      this.arpPattern.stop();
-      Tone.getTransport().stop();
-      this.synth.releaseAll();
-      this.subSynth.releaseAll();
-
-      // 2. Resume Polyphonic play for held notes
-      const notesToResume = Array.from(this.activeNotes);
-      // Clear them first so playNote re-triggers them
       this.activeNotes.clear();
-
-      notesToResume.forEach((note) => {
-        // Only resume if physically held or hold is on
-        if (this.holdEnabled || this.heldKeys.has(note)) {
-          this.playNote(note);
-        }
-      });
     }
   }
 
   public setArpRate(bpm: number) {
-    Tone.getTransport().bpm.value = bpm;
+    this.arpController.setRate(bpm);
   }
 
   public setArpMode(mode: "up" | "down" | "upDown" | "random") {
-    this.arpPattern.pattern = mode;
+    this.arpController.setMode(mode);
   }
 
   public setHold(enabled: boolean) {
@@ -335,7 +255,7 @@ class JunoEngine {
       this.synth.releaseAll();
       this.subSynth.releaseAll();
       this.activeNotes.clear();
-      this.arpPattern.stop();
+      this.arpController.clearNotes();
     }
   }
 }
