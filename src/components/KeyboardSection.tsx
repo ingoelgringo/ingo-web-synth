@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/Keyboard.css";
 import { useKeyboardContext } from "../hooks/useKeyboardContext";
 import { generateRange } from "../utils/keyboardUtils";
+import { KEY_MAP } from "../hooks/useKeyboard";
 
 export const KeyboardSection: React.FC = () => {
   const { activeNotes, pressNote, releaseNote } = useKeyboardContext();
+  const [showKeyHints, setShowKeyHints] = useState(false);
   const layout = generateRange(2, 5);
+
+  // Create a reverse map to find the computer key for a given note
+  const noteToKeyMap = Object.entries(KEY_MAP).reduce(
+    (acc, [key, note]) => {
+      // If multiple keys map to the same note, we just keep the first one we find
+      if (!acc[note]) {
+        acc[note] = key.toUpperCase();
+      }
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
 
   // measurements must match CSS: keyWidth + gap (margin) => 40 + 2 = 42
   const keyStep = 42;
@@ -17,6 +31,20 @@ export const KeyboardSection: React.FC = () => {
 
   return (
     <div className="keyboard-section">
+      <div className="keyboard-controls">
+        <label className="key-hint-toggle">
+          <div className="switch-hole">
+            <input
+              type="checkbox"
+              checked={showKeyHints}
+              onChange={(e) => setShowKeyHints(e.target.checked)}
+              className="switch-input"
+            />
+            <div className="switch-handle"></div>
+          </div>
+          <span className="switch-label">KEY HINTS</span>
+        </label>
+      </div>
       <div
         className="keyboard-container"
         style={{ width: `${containerWidth}px` }}
@@ -24,6 +52,7 @@ export const KeyboardSection: React.FC = () => {
         <div className="white-keys" style={{ display: "flex" }}>
           {layout.map((w) => {
             const whiteActive = activeNotes.includes(w.note);
+            const keyHint = noteToKeyMap[w.note];
             return (
               <div
                 key={w.note}
@@ -31,7 +60,11 @@ export const KeyboardSection: React.FC = () => {
                 onPointerDown={() => pressNote(w.note)}
                 onPointerUp={() => releaseNote(w.note)}
                 onPointerLeave={() => releaseNote(w.note)}
-              />
+              >
+                {showKeyHints && keyHint && (
+                  <span className="key-hint white-key-hint">{keyHint}</span>
+                )}
+              </div>
             );
           })}
         </div>
@@ -41,6 +74,7 @@ export const KeyboardSection: React.FC = () => {
             if (!w.black) return null;
             const blackActive = activeNotes.includes(w.black);
             const left = i * keyStep + blackOffset;
+            const keyHint = noteToKeyMap[w.black];
             return (
               <div
                 key={w.black}
@@ -58,7 +92,11 @@ export const KeyboardSection: React.FC = () => {
                   e.stopPropagation();
                   releaseNote(w.black!);
                 }}
-              />
+              >
+                {showKeyHints && keyHint && (
+                  <span className="key-hint black-key-hint">{keyHint}</span>
+                )}
+              </div>
             );
           })}
         </div>

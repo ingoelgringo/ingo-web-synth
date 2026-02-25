@@ -3,6 +3,89 @@
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 50px;
+  position: relative;
+}
+
+.keyboard-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.key-hint-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch-hole {
+  width: 32px;
+  height: 18px;
+  background: #111;
+  border-radius: 9px;
+  position: relative;
+  box-shadow:
+    inset 3px 0 6px rgba(0, 0, 0, 0.8),
+    inset -1px 0 3px rgba(255, 255, 255, 0.1),
+    0 1px 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid #000;
+}
+
+.switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.switch-handle {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0e0e0 0%, #a0a0a0 50%, #707070 100%);
+  box-shadow:
+    1px 0 3px rgba(0, 0, 0, 0.5),
+    inset 1px 0 1px rgba(255, 255, 255, 0.8),
+    inset -1px 0 1px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* When checked, move the handle right */
+.switch-input:checked + .switch-handle {
+  transform: translateX(14px);
+}
+
+.switch-label {
+  color: #888;
+  font-size: 0.65rem;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  letter-spacing: 1px;
+}
+
+.key-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.white-key-hint {
+  color: #333;
+}
+
+.black-key-hint {
+  color: #eee;
 }
 
 /* container holds both white keys row and absolute black key overlay */

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useKeyboardContext } from "./useKeyboardContext";
 
 // Map of computer keys to notes (covers approx C2 - C5 across two rows)
-const KEY_MAP: Record<string, string> = {
+export const KEY_MAP: Record<string, string> = {
   // lower row
   z: "C2",
   s: "C#2",
@@ -16,11 +16,6 @@ const KEY_MAP: Record<string, string> = {
   n: "A2",
   j: "A#2",
   m: "B2",
-  ",": "C3",
-  l: "C#3",
-  ".": "D3",
-  ";": "D#3",
-  "/": "E3",
   // top row
   q: "C3",
   "2": "C#3",
@@ -42,6 +37,12 @@ const KEY_MAP: Record<string, string> = {
   "[": "F4",
   "=": "F#4",
   "]": "G4",
+  // lower row continuation (placed after top row so top row keys take precedence in reverse mapping)
+  ",": "C3",
+  l: "C#3",
+  ".": "D3",
+  ";": "D#3",
+  "/": "E3",
 };
 
 export const useKeyboard = (enabled: boolean) => {
