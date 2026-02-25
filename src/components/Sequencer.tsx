@@ -1,23 +1,14 @@
 import { useState, useEffect } from "react";
 import { engine } from "../audio/engine";
+import { generateRange } from "../utils/keyboardUtils";
 import "../styles/Sequencer.css";
 
-// En oktav av noter för rutnätet (uppifrån och ner)
-const NOTES = [
-  "C4",
-  "B3",
-  "A#3",
-  "A3",
-  "G#3",
-  "G3",
-  "F#3",
-  "F3",
-  "E3",
-  "D#3",
-  "D3",
-  "C#3",
-  "C3",
-];
+// Generera alla noter från C2 till C5 (samma som keyboarden)
+// och vänd på arrayen så att de högsta noterna hamnar överst i rutnätet
+const NOTES = generateRange(2, 5)
+  .flatMap((w) => (w.black ? [w.note, w.black] : [w.note]))
+  .reverse();
+
 const NUM_STEPS = 16;
 
 export const Sequencer = () => {
@@ -35,7 +26,8 @@ export const Sequencer = () => {
     engine.setSequencerCallback((step) => setCurrentStep(step));
     return () => {
       engine.setSequencerCallback(() => {});
-      engine.stopSequencer(); // Stanna om vi byter vy
+      // Vi tar bort engine.stopSequencer() här så att den kan fortsätta spela
+      // även om komponenten skulle unmountas (vilket den inte gör längre, men för säkerhets skull)
     };
   }, []);
 
@@ -78,20 +70,23 @@ export const Sequencer = () => {
         {isPlaying ? "STOP SEQ" : "PLAY SEQ"}
       </button>
       <div className="sequencer-grid">
-        {NOTES.map((note, nIdx) => (
-          <div key={note} className="seq-row">
-            <div className="seq-note-label">{note}</div>
-            {Array.from({ length: NUM_STEPS }).map((_, sIdx) => (
-              <div
-                key={sIdx}
-                className={`seq-cell ${grid[nIdx][sIdx] ? "active" : ""} ${
-                  currentStep === sIdx ? "playing" : ""
-                }`}
-                onClick={() => toggleCell(nIdx, sIdx)}
-              />
-            ))}
-          </div>
-        ))}
+        {NOTES.map((note, nIdx) => {
+          const isBlackKey = note.includes("#");
+          return (
+            <div key={note} className="seq-row">
+              <div className="seq-note-label">{note}</div>
+              {Array.from({ length: NUM_STEPS }).map((_, sIdx) => (
+                <div
+                  key={sIdx}
+                  className={`seq-cell ${isBlackKey ? "black-key-row" : "white-key-row"} ${
+                    grid[nIdx][sIdx] ? "active" : ""
+                  } ${currentStep === sIdx ? "playing" : ""}`}
+                  onClick={() => toggleCell(nIdx, sIdx)}
+                />
+              ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
