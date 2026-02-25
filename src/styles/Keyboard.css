@@ -96,7 +96,7 @@
   cursor: pointer;
 }
 .hold.active {
-  background: #2f7f2f;
+  background: var(--juno-red); /* Use variable for active state */
   color: white;
   box-shadow: 0 6px 14px rgba(47, 127, 47, 0.25);
 }

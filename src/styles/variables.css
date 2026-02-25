@@ -1,0 +1,13 @@
+:root {
+  --juno-bg: #2b2b2b; /* Mörkgrå panel */
+  --juno-panel-border: #999; /* Ljus list */
+  --juno-text: #ddd;
+  --juno-yellow: #eecf45; /* VCA / Chorus */
+  --juno-blue: #5b9bd5; /* DCO / LFO */
+  --juno-red: #d94e4e; /* Hold / Arp */
+  --juno-white: #f0f0f0; /* Text / Lines */
+  --knob-track: #111;
+  --knob-handle: #373737;
+
+  --lines: 10; /* Number of lines on the slider track */
+}

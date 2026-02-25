@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { engine } from "../audio/engine";
-import "../JunoStyles.css";
 
 export const DCOSection: React.FC = () => {
   const [sawEnabled, setSawEnabled] = useState(true);

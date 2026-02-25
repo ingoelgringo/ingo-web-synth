@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/SynthPanel.css";
 import { ArpSection } from "./ArpSection";
 import { LFOSection } from "./LFOSection";
 import { DCOSection } from "./DCOSection";

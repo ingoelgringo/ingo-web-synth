@@ -1,5 +1,6 @@
 import { useState } from "react";
-import "./JunoStyles.css";
+import "./styles/variables.css";
+import "./styles/global.css";
 import * as Tone from "tone";
 import { engine } from "./audio/engine";
 import { useKeyboard } from "./hooks/useKeyboard";

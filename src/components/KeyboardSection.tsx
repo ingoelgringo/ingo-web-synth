@@ -1,5 +1,5 @@
 import React from "react";
-import "../KeyboardStyles.css";
+import "../styles/Keyboard.css";
 import { useKeyboardContext } from "../hooks/useKeyboardContext";
 import { generateRange } from "../utils/keyboardUtils";
 
