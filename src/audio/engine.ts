@@ -120,17 +120,21 @@ class JunoEngine {
       }
     } else {
       // Regular polyphonic mode
-      this.synth.triggerAttack(note, Tone.now(), velocity);
+      // Avoid retriggering the same note if it's already active (prevents
+      // duplicate layers when UI fires multiple presses).
+      if (!this.activeNotes.has(note)) {
+        this.synth.triggerAttack(note, Tone.now(), velocity);
 
-      // Play Sub
-      try {
-        const subNote = Tone.Frequency(note).transpose(-12).toNote();
-        this.subSynth.triggerAttack(subNote, Tone.now(), velocity);
-      } catch {
-        // Ignore errors if note is out of range
+        // Play Sub
+        try {
+          const subNote = Tone.Frequency(note).transpose(-12).toNote();
+          this.subSynth.triggerAttack(subNote, Tone.now(), velocity);
+        } catch {
+          // Ignore errors if note is out of range
+        }
+
+        this.activeNotes.add(note);
       }
-
-      this.activeNotes.add(note);
     }
   }
 
@@ -140,6 +144,36 @@ class JunoEngine {
     if (this.holdEnabled) {
       return;
     }
+    // Arpeggiator mode
+    if (this.arpEnabled) {
+      this.activeNotes.delete(note);
+      this.updateArpPattern();
+
+      if (this.activeNotes.size === 0) {
+        this.arpPattern.stop();
+        this.synth.releaseAll();
+        this.subSynth.releaseAll();
+        Tone.getTransport().stop();
+      }
+    } else {
+      // Ordinary polyphonic release
+      this.synth.triggerRelease(note, Tone.now());
+
+      // Release Sub
+      try {
+        const subNote = Tone.Frequency(note).transpose(-12).toNote();
+        this.subSynth.triggerRelease(subNote, Tone.now());
+      } catch {
+        // Ignore errors if note is out of range
+      }
+
+      this.activeNotes.delete(note);
+    }
+  }
+
+  // Force-release a note even when hold is enabled (used by UI toggle)
+  public releaseHeldNote(note: string) {
+    this.heldKeys.delete(note);
     // Arpeggiator mode
     if (this.arpEnabled) {
       this.activeNotes.delete(note);

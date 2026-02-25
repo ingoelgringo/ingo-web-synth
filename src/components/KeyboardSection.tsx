@@ -55,9 +55,34 @@ export const KeyboardSection: React.FC = () => {
               <div
                 key={w.note}
                 className={`keyboard-key${whiteActive ? " active" : ""}`}
-                onPointerDown={() => pressNote(w.note)}
-                onPointerUp={() => releaseNote(w.note)}
-                onPointerLeave={() => releaseNote(w.note)}
+                onPointerDown={(e) => {
+                  try {
+                    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+                  } catch {
+                    // ignore
+                  }
+                  pressNote(w.note);
+                }}
+                onPointerUp={(e) => {
+                  try {
+                    (e.currentTarget as Element).releasePointerCapture(
+                      e.pointerId,
+                    );
+                  } catch {
+                    // ignore
+                  }
+                  releaseNote(w.note);
+                }}
+                onPointerLeave={(e) => {
+                  try {
+                    (e.currentTarget as Element).releasePointerCapture(
+                      e.pointerId,
+                    );
+                  } catch {
+                    // ignore
+                  }
+                  releaseNote(w.note);
+                }}
               />
             );
           })}
@@ -75,14 +100,33 @@ export const KeyboardSection: React.FC = () => {
                 style={{ position: "absolute", left: `${left}px` }}
                 onPointerDown={(e) => {
                   e.stopPropagation();
+                  try {
+                    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+                  } catch {
+                    // ignore
+                  }
                   pressNote(w.black!);
                 }}
                 onPointerUp={(e) => {
                   e.stopPropagation();
+                  try {
+                    (e.currentTarget as Element).releasePointerCapture(
+                      e.pointerId,
+                    );
+                  } catch {
+                    // ignore
+                  }
                   releaseNote(w.black!);
                 }}
                 onPointerLeave={(e) => {
                   e.stopPropagation();
+                  try {
+                    (e.currentTarget as Element).releasePointerCapture(
+                      e.pointerId,
+                    );
+                  } catch {
+                    // ignore
+                  }
                   releaseNote(w.black!);
                 }}
               />

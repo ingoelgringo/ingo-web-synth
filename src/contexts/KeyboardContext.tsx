@@ -9,17 +9,31 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [hold, setHold] = useState(false);
 
   const pressNote = useCallback((note: string) => {
-    setActiveNotes((s) => (s.includes(note) ? s : [...s, note]));
-    try {
-      engine.playNote(note);
-    } catch {
-      // ignore
-    }
+    setActiveNotes((s) => {
+      if (s.includes(note)) {
+        try {
+          // Always force-release when toggling via UI press to avoid
+          // playback persisting if the engine hold state is out-of-sync.
+          engine.releaseHeldNote(note);
+        } catch {
+          // ignore
+        }
+        return s.filter((n) => n !== note);
+      }
+
+      try {
+        engine.playNote(note);
+      } catch {
+        // ignore
+      }
+      return [...s, note];
+    });
   }, []);
 
   const releaseNote = useCallback(
     (note: string) => {
       try {
+        // Use normal stopNote here so releases respect `hold` mode.
         engine.stopNote(note);
       } catch {
         // ignore
