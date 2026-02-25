@@ -92,7 +92,10 @@ class JunoEngine {
   }
 
   private initSequencer() {
-    this.sequencerController = new SequencerController(this.synth);
+    this.sequencerController = new SequencerController(
+      this.synth,
+      this.subSynth,
+    );
   }
 
   public async start() {

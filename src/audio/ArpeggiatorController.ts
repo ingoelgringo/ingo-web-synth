@@ -39,9 +39,10 @@ export class ArpeggiatorController {
         if (Tone.getContext().state !== "running") {
           Tone.getContext().resume();
         }
-        Tone.getTransport().stop();
-        Tone.getTransport().start();
-        this.arpPattern.start(0);
+        if (Tone.getTransport().state !== "started") {
+          Tone.getTransport().start();
+        }
+        this.arpPattern.start("@16n");
       }
     }
   }
@@ -107,9 +108,10 @@ export class ArpeggiatorController {
         if (Tone.getContext().state !== "running") {
           Tone.getContext().resume();
         }
-        Tone.getTransport().stop();
-        Tone.getTransport().start();
-        this.arpPattern.start(0);
+        if (Tone.getTransport().state !== "started") {
+          Tone.getTransport().start();
+        }
+        this.arpPattern.start("@16n");
       }
     } else {
       // Disabling Arp:
