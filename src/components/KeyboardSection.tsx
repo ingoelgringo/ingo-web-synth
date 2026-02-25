@@ -1,32 +1,7 @@
 import React from "react";
 import "../KeyboardStyles.css";
 import { useKeyboardContext } from "../hooks/useKeyboardContext";
-
-const WHITE_ORDER = ["C", "D", "E", "F", "G", "A", "B"];
-const BLACK_AFTER: Record<string, string> = {
-  C: "C#",
-  D: "D#",
-  F: "F#",
-  G: "G#",
-  A: "A#",
-};
-
-function generateRange(startOct = 2, endOct = 5) {
-  const whites: { note: string; black?: string }[] = [];
-  for (let oct = startOct; oct <= endOct; oct++) {
-    for (const w of WHITE_ORDER) {
-      const whiteNote = `${w}${oct}`;
-      const blackName = BLACK_AFTER[w];
-      // do not create black key for octave end if black would be in next octave beyond C5
-      const blackNote = blackName ? `${blackName}${oct}` : undefined;
-      whites.push({ note: whiteNote, black: blackNote });
-    }
-  }
-  // Trim to C2..C5 inclusive: keep until C5 and stop
-  const endIndex = whites.findIndex((w) => w.note === "C5");
-  if (endIndex >= 0) return whites.slice(0, endIndex + 1);
-  return whites;
-}
+import { generateRange } from "../utils/keyboardUtils";
 
 export const KeyboardSection: React.FC = () => {
   const { activeNotes, pressNote, releaseNote } = useKeyboardContext();
@@ -42,8 +17,6 @@ export const KeyboardSection: React.FC = () => {
 
   return (
     <div className="keyboard-section">
-      {/* Hold button removed from keyboard UI; centralized in HoldButton component */}
-
       <div
         className="keyboard-container"
         style={{ width: `${containerWidth}px` }}
@@ -55,34 +28,9 @@ export const KeyboardSection: React.FC = () => {
               <div
                 key={w.note}
                 className={`keyboard-key${whiteActive ? " active" : ""}`}
-                onPointerDown={(e) => {
-                  try {
-                    (e.currentTarget as Element).setPointerCapture(e.pointerId);
-                  } catch {
-                    // ignore
-                  }
-                  pressNote(w.note);
-                }}
-                onPointerUp={(e) => {
-                  try {
-                    (e.currentTarget as Element).releasePointerCapture(
-                      e.pointerId,
-                    );
-                  } catch {
-                    // ignore
-                  }
-                  releaseNote(w.note);
-                }}
-                onPointerLeave={(e) => {
-                  try {
-                    (e.currentTarget as Element).releasePointerCapture(
-                      e.pointerId,
-                    );
-                  } catch {
-                    // ignore
-                  }
-                  releaseNote(w.note);
-                }}
+                onPointerDown={() => pressNote(w.note)}
+                onPointerUp={() => releaseNote(w.note)}
+                onPointerLeave={() => releaseNote(w.note)}
               />
             );
           })}
@@ -100,33 +48,14 @@ export const KeyboardSection: React.FC = () => {
                 style={{ position: "absolute", left: `${left}px` }}
                 onPointerDown={(e) => {
                   e.stopPropagation();
-                  try {
-                    (e.currentTarget as Element).setPointerCapture(e.pointerId);
-                  } catch {
-                    // ignore
-                  }
                   pressNote(w.black!);
                 }}
                 onPointerUp={(e) => {
                   e.stopPropagation();
-                  try {
-                    (e.currentTarget as Element).releasePointerCapture(
-                      e.pointerId,
-                    );
-                  } catch {
-                    // ignore
-                  }
                   releaseNote(w.black!);
                 }}
                 onPointerLeave={(e) => {
                   e.stopPropagation();
-                  try {
-                    (e.currentTarget as Element).releasePointerCapture(
-                      e.pointerId,
-                    );
-                  } catch {
-                    // ignore
-                  }
                   releaseNote(w.black!);
                 }}
               />
