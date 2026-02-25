@@ -12,9 +12,8 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
     setActiveNotes((s) => {
       if (s.includes(note)) {
         try {
-          // Always force-release when toggling via UI press to avoid
-          // playback persisting if the engine hold state is out-of-sync.
-          engine.releaseHeldNote(note);
+          // Toggle: force-release via engine so UI toggles reliably stop sound
+          engine.forceReleaseNote(note);
         } catch {
           // ignore
         }

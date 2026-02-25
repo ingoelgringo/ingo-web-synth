@@ -139,11 +139,20 @@ class JunoEngine {
   }
 
   public stopNote(note: string) {
+    this.doRelease(note, false);
+  }
+
+  // Internal unified release logic. When `force` is true, release even if
+  // `holdEnabled` is set (used for UI toggles and pointer interactions
+  // that explicitly want to stop sound).
+  private doRelease(note: string, force: boolean) {
     this.heldKeys.delete(note);
-    // Hold mode: Ignore release events
-    if (this.holdEnabled) {
+
+    // Hold mode: Ignore release events unless forced
+    if (this.holdEnabled && !force) {
       return;
     }
+
     // Arpeggiator mode
     if (this.arpEnabled) {
       this.activeNotes.delete(note);
@@ -155,50 +164,26 @@ class JunoEngine {
         this.subSynth.releaseAll();
         Tone.getTransport().stop();
       }
-    } else {
-      // Ordinary polyphonic release
-      this.synth.triggerRelease(note, Tone.now());
-
-      // Release Sub
-      try {
-        const subNote = Tone.Frequency(note).transpose(-12).toNote();
-        this.subSynth.triggerRelease(subNote, Tone.now());
-      } catch {
-        // Ignore errors if note is out of range
-      }
-
-      this.activeNotes.delete(note);
+      return;
     }
+
+    // Ordinary polyphonic release
+    this.synth.triggerRelease(note, Tone.now());
+
+    // Release Sub
+    try {
+      const subNote = Tone.Frequency(note).transpose(-12).toNote();
+      this.subSynth.triggerRelease(subNote, Tone.now());
+    } catch {
+      // Ignore errors if note is out of range
+    }
+
+    this.activeNotes.delete(note);
   }
 
   // Force-release a note even when hold is enabled (used by UI toggle)
-  public releaseHeldNote(note: string) {
-    this.heldKeys.delete(note);
-    // Arpeggiator mode
-    if (this.arpEnabled) {
-      this.activeNotes.delete(note);
-      this.updateArpPattern();
-
-      if (this.activeNotes.size === 0) {
-        this.arpPattern.stop();
-        this.synth.releaseAll();
-        this.subSynth.releaseAll();
-        Tone.getTransport().stop();
-      }
-    } else {
-      // Ordinary polyphonic release
-      this.synth.triggerRelease(note, Tone.now());
-
-      // Release Sub
-      try {
-        const subNote = Tone.Frequency(note).transpose(-12).toNote();
-        this.subSynth.triggerRelease(subNote, Tone.now());
-      } catch {
-        // Ignore errors if note is out of range
-      }
-
-      this.activeNotes.delete(note);
-    }
+  public forceReleaseNote(note: string) {
+    this.doRelease(note, true);
   }
 
   // Oscillator waveform
