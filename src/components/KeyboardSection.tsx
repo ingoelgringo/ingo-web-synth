@@ -1,6 +1,6 @@
 import React from "react";
 import "../KeyboardStyles.css";
-import { useKeyboardContext } from "../contexts/KeyboardContext";
+import { useKeyboardContext } from "../hooks/useKeyboardContext";
 
 const WHITE_ORDER = ["C", "D", "E", "F", "G", "A", "B"];
 const BLACK_AFTER: Record<string, string> = {
@@ -29,8 +29,7 @@ function generateRange(startOct = 2, endOct = 5) {
 }
 
 export const KeyboardSection: React.FC = () => {
-  const { activeNotes, pressNote, releaseNote, hold, toggleHold } =
-    useKeyboardContext();
+  const { activeNotes, pressNote, releaseNote } = useKeyboardContext();
   const layout = generateRange(2, 5);
 
   // measurements must match CSS: keyWidth + gap (margin) => 40 + 2 = 42

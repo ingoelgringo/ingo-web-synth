@@ -1,5 +1,5 @@
 import React from "react";
-import { useKeyboardContext } from "../contexts/KeyboardContext";
+import { useKeyboardContext } from "../hooks/useKeyboardContext";
 
 export const HoldButton: React.FC = () => {
   const { hold, toggleHold } = useKeyboardContext();

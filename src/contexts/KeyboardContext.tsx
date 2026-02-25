@@ -1,17 +1,6 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { engine } from "../audio/engine";
-
-type KeyboardContextType = {
-  activeNotes: string[];
-  hold: boolean;
-  pressNote: (note: string) => void;
-  releaseNote: (note: string) => void;
-  toggleHold: () => void;
-};
-
-const KeyboardContext = createContext<KeyboardContextType | undefined>(
-  undefined,
-);
+import { KeyboardContext } from "./keyboardCore";
 
 export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -23,7 +12,7 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
     setActiveNotes((s) => (s.includes(note) ? s : [...s, note]));
     try {
       engine.playNote(note);
-    } catch (e) {
+    } catch {
       // ignore
     }
   }, []);
@@ -32,7 +21,7 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
     (note: string) => {
       try {
         engine.stopNote(note);
-      } catch (e) {
+      } catch {
         // ignore
       }
       setActiveNotes((s) => (hold ? s : s.filter((n) => n !== note)));
@@ -61,9 +50,7 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useKeyboardContext = () => {
-  const ctx = useContext(KeyboardContext);
-  if (!ctx)
-    throw new Error("useKeyboardContext must be used within KeyboardProvider");
-  return ctx;
-};
+export default KeyboardProvider;
+
+// NOTE: do not export non-component values from this .tsx file — keep it
+// limited to the `KeyboardProvider` component so React Fast Refresh works.

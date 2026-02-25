@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useKeyboardContext } from "../contexts/KeyboardContext";
+import { useKeyboardContext } from "./useKeyboardContext";
 
 // Map of computer keys to notes (covers approx C2 - C5 across two rows)
 const KEY_MAP: Record<string, string> = {
@@ -51,14 +51,16 @@ export const useKeyboard = (enabled: boolean) => {
   useEffect(() => {
     if (!enabled) return;
 
+    const map = physicalMapRef.current;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.repeat) return;
       const key = e.key.toLowerCase();
       const note = KEY_MAP[key];
       if (note) {
         e.preventDefault();
-        if (!physicalMapRef.current.has(key)) {
-          physicalMapRef.current.set(key, note);
+        if (!map.has(key)) {
+          map.set(key, note);
           pressNote(note);
         }
       }
@@ -66,11 +68,11 @@ export const useKeyboard = (enabled: boolean) => {
 
     const handleKeyUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      const note = physicalMapRef.current.get(key) || KEY_MAP[key];
+      const note = map.get(key) || KEY_MAP[key];
       if (note) {
         e.preventDefault();
         releaseNote(note);
-        physicalMapRef.current.delete(key);
+        map.delete(key);
       }
     };
 
@@ -80,7 +82,7 @@ export const useKeyboard = (enabled: boolean) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      physicalMapRef.current.clear();
+      map.clear();
     };
   }, [enabled, pressNote, releaseNote]);
 };
