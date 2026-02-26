@@ -51,6 +51,15 @@ export const SynthPanel: React.FC = () => {
         </div>
       </div>
       <KeyboardSection />
+      <p
+        style={{
+          color: "#888",
+          fontSize: "0.75rem",
+          margin: "10px 0 0 0",
+        }}
+      >
+        * Chrome seems to have issues playing multiple notes simultaneously
+      </p>
     </div>
   );
 };
