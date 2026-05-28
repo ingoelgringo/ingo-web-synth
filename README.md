@@ -52,15 +52,6 @@ npm run dev
 
 See package.json for available scripts.
 
-## Important files
-
-- Main app: src/App.tsx
-- Audio engine: src/audio/engine.ts
-- Keyboard hook: src/hooks/useKeyboard.ts
-- UI examples: src/components/KeyboardSection.tsx
-- Types: src/types/synth.ts
-- Vite config: vite.config.ts
-
 ## Usage
 
 - Click the POWER ON button in the UI to initialize the audio context (required by browsers).
